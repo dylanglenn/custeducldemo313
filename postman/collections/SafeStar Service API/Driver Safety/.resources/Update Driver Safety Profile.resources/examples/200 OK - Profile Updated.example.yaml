@@ -1,0 +1,52 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/driver/:id"
+  method: PUT
+  headers:
+    Content-Type: application/json
+  pathVariables:
+    - key: id
+      value: "1001"
+      description: Driver UUID
+  body:
+    type: json
+    content: |-
+      {
+          "safetyScore": 95,
+          "hardStops": 0,
+          "speeding": 1,
+          "nightDrives": 0,
+          "weather": 0,
+          "ignoredWarnings": 0
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+          "profileId": "1",
+          "driver": {
+              "firstName": "Alex",
+              "lastName": "Johnson",
+              "license": {
+                  "issueDate": "2022-05-14",
+                  "expiry": "2026-05-14",
+                  "issuingState": "CA",
+                  "restrictions": [
+                      "B"
+                  ]
+              },
+              "email": "alex.johnson@example.com"
+          },
+          "safetyScore": 95,
+          "hardStops": 0,
+          "speeding": 1,
+          "nightDrives": 0,
+          "weather": 0,
+          "ignoredWarnings": 0
+      }
+order: 1000

@@ -1,0 +1,40 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/vehicle/:id"
+  method: GET
+  pathVariables:
+    id: "1002"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+          "vehicle": {
+              "id": 123,
+              "vin": "1HGCM82633A004352",
+              "make": "Honda",
+              "model": "Accord",
+              "year": 2020,
+              "mileage": 45000
+          },
+          "tpms": "OK",
+          "tailLights": "OK",
+          "oilPressure": "OK",
+          "sensors": "OK",
+          "defrost": "OK",
+          "airbags": "OK",
+          "battery": "OK",
+          "newCode": true,
+          "activeCodes": [
+              "P0300",
+              "P0420",
+              "P0455",
+              "P0171",
+              "P0128"
+          ]
+      }
+order: 1000

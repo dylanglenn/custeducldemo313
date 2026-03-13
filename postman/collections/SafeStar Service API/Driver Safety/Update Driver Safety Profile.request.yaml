@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{baseUrl}}/driver/:id"
+method: PUT
+pathVariables:
+  id: "1001"
+examples: ./.resources/Update Driver Safety Profile.resources/examples
+order: 3000

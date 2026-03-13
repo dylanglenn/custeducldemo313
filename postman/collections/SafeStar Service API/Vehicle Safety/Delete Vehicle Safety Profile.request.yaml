@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{baseUrl}}/vehicle/:id"
+method: DELETE
+pathVariables:
+  id: "1002"
+examples: ./.resources/Delete Vehicle Safety Profile.resources/examples
+order: 5000

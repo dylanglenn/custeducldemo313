@@ -1,0 +1,41 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/vehicle/:id"
+  method: POST
+  pathVariables:
+    id: "1002"
+  body:
+    type: json
+    content: |-
+      {
+        "vin": "1HGCM82633A004352",
+        "tpms": "OK",
+        "tailLights": "OK",
+        "oilPressure": "OK",
+        "sensors": "OK",
+        "defrost": "OK",
+        "airbags": "OK",
+        "battery": "OK",
+        "newCode": true,
+        "activeCodes": ["P0300", "P0420", "P0455", "P0171", "P0128"]
+      }
+response:
+  statusCode: 409
+  statusText: Conflict
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "error": {
+          "code": "PROFILE_ALREADY_EXISTS",
+          "message": "A safety profile already exists for this vehicle.",
+          "details": {
+            "vehicleId": 1002,
+            "existingProfileId": "2",
+            "vin": "1HGCM82633A004352"
+          }
+        }
+      }
+order: 3000

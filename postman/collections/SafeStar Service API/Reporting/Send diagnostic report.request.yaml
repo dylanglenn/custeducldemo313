@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{baseUrl}}/diagnostics/send/:id"
+method: POST
+pathVariables:
+  id: "1"
+examples: ./.resources/Send diagnostic report.resources/examples
+order: 3000

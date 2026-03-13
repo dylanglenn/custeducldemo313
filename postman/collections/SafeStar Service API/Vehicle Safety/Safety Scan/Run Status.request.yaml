@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{baseUrl}}/run/:id"
+method: GET
+pathVariables:
+  id: "1"
+examples: ./.resources/Run Status.resources/examples
+order: 2000

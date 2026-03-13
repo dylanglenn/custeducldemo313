@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{baseUrl}}/display"
+method: GET
+body:
+  type: json
+  content: |-
+    {
+        "driver": "1001",
+        "vehicle": "1002"
+    }
+order: 4000

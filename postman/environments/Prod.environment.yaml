@@ -1,0 +1,6 @@
+name: Prod
+values:
+  - key: baseUrl
+    value: ""
+    enabled: true
+color: 120

@@ -1,0 +1,44 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/vehicle"
+  method: POST
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "vin": "1HG",
+        "tpms": "OK",
+        "tailLights": "OK",
+        "oilPressure": "OK",
+        "sensors": "OK",
+        "defrost": "OK",
+        "airbags": "OK",
+        "battery": "OK",
+        "newCode": true,
+        "activeCodes": ["P0300", "P0420", "P0455", "P0171", "P0128"]
+      }
+response:
+  statusCode: 400
+  statusText: Bad Request
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "error": {
+          "code": "VALIDATION_ERROR",
+          "message": "Request body failed validation.",
+          "details": {
+            "fields": [
+              {
+                "field": "vin",
+                "issue": "must be 17 characters"
+              }
+            ]
+          }
+        }
+      }
+order: 2000

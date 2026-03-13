@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/display"
+method: GET
+headers:
+  x-mock-response-name: 200 - Display error message after failed run
+body:
+  type: json
+  content: |-
+    {
+        "driver": "1001",
+        "vehicle": "1002"
+    }
+order: 1000

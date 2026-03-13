@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{baseUrl}}/diagnostics/:id"
+method: GET
+pathVariables:
+  id: "1"
+examples: ./.resources/Retrieve diagnostic report.resources/examples
+order: 2000

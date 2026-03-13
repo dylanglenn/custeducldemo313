@@ -1,0 +1,24 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/vehicle/:id"
+  method: GET
+  pathVariables:
+    - key: id
+      value: "1002"
+      description: Vehicle UUID
+response:
+  statusCode: 404
+  statusText: Not Found
+  body:
+    type: json
+    content: |-
+      {
+        "error": {
+          "code": "VEHICLE_PROFILE_NOT_FOUND",
+          "message": "No safety profile found for the specified vehicle.",
+          "details": {
+            "vehicleId": "1002"
+          }
+        }
+      }
+order: 2000

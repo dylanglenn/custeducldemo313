@@ -1,0 +1,15 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/driver/:id"
+  method: DELETE
+  pathVariables:
+    - key: id
+      value: "1001"
+      description: Driver UUID
+response:
+  statusCode: 204
+  statusText: No Content
+  body:
+    type: text
+    content: " "
+order: 2000

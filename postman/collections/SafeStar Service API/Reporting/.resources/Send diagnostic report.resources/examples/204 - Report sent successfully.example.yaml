@@ -1,0 +1,20 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/diagnostics/send/:id"
+  method: POST
+  headers:
+    Content-Type: application/json
+  pathVariables:
+    id: "1"
+  body:
+    type: json
+    content: ""
+response:
+  statusCode: 204
+  statusText: No Content
+  headers:
+    Content-Type: application/json
+  body:
+    type: text
+    content: ""
+order: 1000

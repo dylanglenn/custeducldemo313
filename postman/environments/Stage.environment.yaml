@@ -1,0 +1,6 @@
+name: Stage
+values:
+  - key: baseUrl
+    value: ""
+    enabled: true
+color: 60

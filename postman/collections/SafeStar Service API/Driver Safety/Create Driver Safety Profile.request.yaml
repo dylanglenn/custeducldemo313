@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/driver/:id"
+method: POST
+pathVariables:
+  id: "1001"
+body:
+  type: json
+  content: ""
+examples: ./.resources/Create Driver Safety Profile.resources/examples
+order: 1000

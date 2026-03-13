@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{baseUrl}}/vehicle/:id"
+method: PATCH
+pathVariables:
+  id: "1002"
+examples: ./.resources/Update Vehicle Safety Profile.resources/examples
+order: 4000

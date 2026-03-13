@@ -1,0 +1,44 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/driver/:id"
+  method: PUT
+  headers:
+    Content-Type: application/json
+  pathVariables:
+    - key: id
+      value: "1001"
+      description: Driver UUID
+  body:
+    type: json
+    content: |-
+      {
+          "safetyScore": 101,
+          "hardStops": 0,
+          "speeding": 0,
+          "nightDrives": 0,
+          "weather": 0,
+          "ignoredWarnings": 0
+      }
+response:
+  statusCode: 400
+  statusText: Bad Request
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "error": {
+          "code": "VALIDATION_ERROR",
+          "message": "Request body failed validation.",
+          "details": {
+            "fields": [
+              {
+                "field": "safetyScore",
+                "issue": "must be an integer between 0 and 100"
+              }
+            ]
+          }
+        }
+      }
+order: 2000

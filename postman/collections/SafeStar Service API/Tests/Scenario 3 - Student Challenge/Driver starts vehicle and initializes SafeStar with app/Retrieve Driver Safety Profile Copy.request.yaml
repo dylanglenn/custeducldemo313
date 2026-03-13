@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/driver/:id"
+method: GET
+pathVariables:
+  id: "1001"
+order: 1000

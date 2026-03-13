@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{baseUrl}}/driver/:id"
+method: GET
+pathVariables:
+  id: "1001"
+examples: ./.resources/Retrieve Driver Safety Profile.resources/examples
+order: 2000

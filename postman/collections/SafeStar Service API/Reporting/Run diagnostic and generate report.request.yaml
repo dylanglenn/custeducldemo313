@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{baseUrl}}/diagnostics/generate/:vehicleId"
+method: POST
+pathVariables:
+  vehicleId: "1002"
+examples: ./.resources/Run diagnostic and generate report.resources/examples
+order: 1000

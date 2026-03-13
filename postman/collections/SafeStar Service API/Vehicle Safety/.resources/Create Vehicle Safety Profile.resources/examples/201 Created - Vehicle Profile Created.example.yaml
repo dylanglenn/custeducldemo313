@@ -1,0 +1,49 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/vehicle/:id"
+  method: POST
+  headers:
+    Content-Type: application/json
+  pathVariables:
+    id: "1002"
+  body:
+    type: json
+    content: |-
+      {
+        "vin": "1HGCM82633A004352",
+        "tpms": "OK",
+        "tailLights": "OK",
+        "oilPressure": "OK",
+        "sensors": "OK",
+        "defrost": "OK",
+        "airbags": "OK",
+        "battery": "OK",
+        "newCode": true,
+        "activeCodes": ["P0300", "P0420", "P0455", "P0171", "P0128"]
+      }
+response:
+  statusCode: 201
+  statusText: Created
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "vehicleId": "2a8d3c55-0f3a-4c31-8a2a-3f2fd3a33d2d",
+        "profileId": "aa7f3f4a-6d6d-4b39-a11a-3cf8c9fe0a5b",
+        "createdAt": "2026-03-12T10:25:01.000Z",
+        "updatedAt": "2026-03-12T10:25:01.000Z",
+        "status": "ACTIVE",
+        "riskScore": 12,
+        "vin": "1HGCM82633A004352",
+        "make": "Toyota",
+        "model": "Camry",
+        "year": 2021,
+        "metrics": {
+          "hardCorneringEvents": 0,
+          "hardBrakingEvents": 0,
+          "speedingEvents": 0
+        }
+      }
+order: 1000

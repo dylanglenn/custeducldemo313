@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/run/:id"
+method: GET
+pathVariables:
+  id: "1"
+scripts:
+  - type: afterResponse
+    code: |-
+      while(pm.response.json().status === "QUEUED") {
+          pm.execution.setNextRequest('Poll for Safety Scan Status');
+      }
+    language: text/javascript
+order: 2000

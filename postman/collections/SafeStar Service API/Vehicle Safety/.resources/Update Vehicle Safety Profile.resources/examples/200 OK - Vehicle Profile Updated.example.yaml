@@ -1,0 +1,37 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/vehicle/:id"
+  method: PATCH
+  headers:
+    Content-Type: application/json
+  pathVariables:
+    - key: id
+      value: "1002"
+      description: Vehicle UUID
+  body:
+    type: json
+    content: |-
+      {
+        "newCode": false
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "vin": "1HGCM82633A004352",
+        "tpms": "OK",
+        "tailLights": "OK",
+        "oilPressure": "OK",
+        "sensors": "OK",
+        "defrost": "OK",
+        "airbags": "OK",
+        "battery": "OK",
+        "newCode": false,
+        "activeCodes": ["P0300", "P0420", "P0455", "P0171", "P0128"]
+      }
+order: 1000
