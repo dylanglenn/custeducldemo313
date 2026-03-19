@@ -1,6 +1,0 @@
-$kind: http-request
-url: "{{baseUrl}}/diagnostics/:id"
-method: GET
-pathVariables:
-  id: "1"
-order: 2000

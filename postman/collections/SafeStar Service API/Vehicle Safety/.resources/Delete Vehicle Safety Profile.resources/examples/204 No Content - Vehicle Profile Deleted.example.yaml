@@ -3,9 +3,7 @@ request:
   url: "{{baseUrl}}/vehicle/:id"
   method: DELETE
   pathVariables:
-    - key: id
-      value: "1002"
-      description: Vehicle UUID
+    id: "1002"
 response:
   statusCode: 204
   statusText: No Content

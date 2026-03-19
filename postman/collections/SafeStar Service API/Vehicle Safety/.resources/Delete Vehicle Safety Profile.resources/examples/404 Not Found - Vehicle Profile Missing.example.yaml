@@ -2,11 +2,15 @@ $kind: http-example
 request:
   url: "{{baseUrl}}/vehicle/:id"
   method: DELETE
+  headers:
+    Accept: application/json
   pathVariables:
     id: "1002"
 response:
   statusCode: 404
   statusText: Not Found
+  headers:
+    Content-Type: application/json
   body:
     type: json
     content: |-

@@ -1,6 +1,8 @@
 $kind: http-request
 url: "{{baseUrl}}/driver/:id"
 method: DELETE
+headers:
+  Accept: application/json
 pathVariables:
   id: "1001"
 examples: ./.resources/Delete Driver Safety Profile.resources/examples

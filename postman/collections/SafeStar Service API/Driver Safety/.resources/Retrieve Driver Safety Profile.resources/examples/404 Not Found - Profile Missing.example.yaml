@@ -1,6 +1,6 @@
 $kind: http-example
 request:
-  url: "{{baseUrl}}/driver/:id"
+  url: "{{baseUrl}}:/driver/:id"
   method: GET
   pathVariables:
     - key: id
@@ -9,16 +9,18 @@ request:
 response:
   statusCode: 404
   statusText: Not Found
+  headers:
+    Content-Type: application/json
   body:
     type: json
     content: |-
       {
-        "error": {
-          "code": "PROFILE_NOT_FOUND",
-          "message": "No safety profile found for the specified driver.",
-          "details": {
-            "driverId": "0000"
+          "error": {
+              "code": "PROFILE_NOT_FOUND",
+              "message": "No safety profile found for the specified driver.",
+              "details": {
+                  "driverId": "0000"
+              }
           }
-        }
       }
 order: 2000

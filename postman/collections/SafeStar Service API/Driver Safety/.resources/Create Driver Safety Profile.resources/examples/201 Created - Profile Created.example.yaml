@@ -4,11 +4,12 @@ request:
   method: POST
   headers:
     Content-Type: application/json
+    Accept: application/json
   pathVariables:
-    id: "{{wildcard}}"
+    id: "1001"
   body:
     type: json
-    content: ""
+    content: "{}"
 response:
   statusCode: 201
   statusText: Created
@@ -18,25 +19,25 @@ response:
     type: json
     content: |-
       {
-          "profileId": "1",
-          "driver": {
-              "firstName": "Alex",
-              "lastName": "Johnson",
-              "license": {
-                  "issueDate": "2022-05-14",
-                  "expiry": "2026-05-14",
-                  "issuingState": "CA",
-                  "restrictions": [
-                      "B"
-                  ]
-              },
-              "email": "alex.johnson@example.com"
+        "profileId": "1",
+        "driver": {
+          "firstName": "Alex",
+          "lastName": "Johnson",
+          "license": {
+            "issueDate": "2022-05-14",
+            "expiry": "2026-05-14",
+            "issuingState": "CA",
+            "restrictions": [
+              "B"
+            ]
           },
-          "safetyScore": 100,
-          "hardStops": 0,
-          "speeding": 0,
-          "nightDrives": 0,
-          "weather": 0,
-          "ignoredWarnings": 0
+          "email": "alex.johnson@example.com"
+        },
+        "safetyScore": 100,
+        "hardStops": 0,
+        "speeding": 0,
+        "nightDrives": 0,
+        "weather": 0,
+        "ignoredWarnings": 0
       }
 order: 1000

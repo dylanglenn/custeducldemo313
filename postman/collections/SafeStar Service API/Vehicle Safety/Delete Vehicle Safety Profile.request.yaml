@@ -1,6 +1,8 @@
 $kind: http-request
 url: "{{baseUrl}}/vehicle/:id"
 method: DELETE
+headers:
+  Accept: application/json
 pathVariables:
   id: "1002"
 examples: ./.resources/Delete Vehicle Safety Profile.resources/examples

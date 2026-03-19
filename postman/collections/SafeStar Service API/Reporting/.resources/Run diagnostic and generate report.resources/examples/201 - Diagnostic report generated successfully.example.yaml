@@ -2,6 +2,8 @@ $kind: http-example
 request:
   url: "{{baseUrl}}/diagnostics/generate/:vehicleId"
   method: POST
+  headers:
+    Accept: application/json
   pathVariables:
     vehicleId: "1002"
 response:
@@ -13,7 +15,7 @@ response:
     type: json
     content: |-
       {
-          "status": "queued",
-          "id": "1"
+        "status": "queued",
+        "id": "1"
       }
 order: 1000

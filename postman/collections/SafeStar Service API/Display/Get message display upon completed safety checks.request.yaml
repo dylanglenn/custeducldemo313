@@ -1,12 +1,15 @@
 $kind: http-request
 url: "{{baseUrl}}/display"
 method: GET
+headers:
+  Content-Type: application/json
+  Accept: application/json
 body:
   type: json
   content: |-
     {
-        "driver": "1001",
-        "vehicle": "1002"
+      "driver": "1001",
+      "vehicle": "1002"
     }
 examples: ./.resources/Get message display upon completed safety
   checks.resources/examples

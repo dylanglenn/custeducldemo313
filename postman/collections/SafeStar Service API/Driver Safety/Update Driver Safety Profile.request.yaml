@@ -1,6 +1,8 @@
 $kind: http-request
 url: "{{baseUrl}}/driver/:id"
 method: PUT
+headers:
+  Accept: application/json
 pathVariables:
   id: "1001"
 examples: ./.resources/Update Driver Safety Profile.resources/examples

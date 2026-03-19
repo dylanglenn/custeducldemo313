@@ -1,0 +1,13 @@
+{
+  "id": "760f0776-274b-4e0c-805c-dcf8c3f0275f",
+  "version": 1,
+  "name": "SafeStar Service API Mock",
+  "protocol": "http",
+  "port": 4500,
+  "mockSrc": "./mock.js",
+  "autoRestartOnChange": true,
+  "logging": {
+    "level": "verbose",
+    "showBody": true
+  }
+}

@@ -1,6 +1,8 @@
 $kind: http-request
 url: "{{baseUrl}}/run/:id"
 method: GET
+headers:
+  Accept: application/json
 pathVariables:
   id: "1"
 examples: ./.resources/Run Status.resources/examples

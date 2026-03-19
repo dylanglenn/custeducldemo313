@@ -3,17 +3,10 @@ request:
   url: "{{baseUrl}}/vehicle/:id"
   method: PATCH
   headers:
+    Accept: application/json
     Content-Type: application/json
   pathVariables:
-    - key: id
-      value: "1002"
-      description: Vehicle UUID
-  body:
-    type: json
-    content: |-
-      {
-        "battery": "OK"
-      }
+    id: "1002"
 response:
   statusCode: 400
   statusText: Bad Request

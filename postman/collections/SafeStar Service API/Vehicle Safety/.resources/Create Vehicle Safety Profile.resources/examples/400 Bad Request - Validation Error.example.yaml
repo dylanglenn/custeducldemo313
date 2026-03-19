@@ -1,14 +1,17 @@
 $kind: http-example
 request:
-  url: "{{baseUrl}}/vehicle"
+  url: "{{baseUrl}}/vehicle/:id"
   method: POST
   headers:
     Content-Type: application/json
+    Accept: application/json
+  pathVariables:
+    id: "1002"
   body:
     type: json
     content: |-
       {
-        "vin": "1HG",
+        "vin": "1HGCM82633A004352",
         "tpms": "OK",
         "tailLights": "OK",
         "oilPressure": "OK",
@@ -17,7 +20,13 @@ request:
         "airbags": "OK",
         "battery": "OK",
         "newCode": true,
-        "activeCodes": ["P0300", "P0420", "P0455", "P0171", "P0128"]
+        "activeCodes": [
+          "P0300",
+          "P0420",
+          "P0455",
+          "P0171",
+          "P0128"
+        ]
       }
 response:
   statusCode: 400

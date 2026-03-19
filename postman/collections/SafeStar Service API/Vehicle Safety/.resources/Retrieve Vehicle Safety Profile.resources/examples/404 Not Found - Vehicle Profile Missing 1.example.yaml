@@ -1,0 +1,27 @@
+$kind: http-example
+name: 404 Not Found - Vehicle Profile Missing
+request:
+  url: "{{baseUrl}}/vehicle/:id"
+  method: GET
+  headers:
+    Accept: application/json
+  pathVariables:
+    id: "1002"
+response:
+  statusCode: 404
+  statusText: Not Found
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "error": {
+          "code": "VEHICLE_PROFILE_NOT_FOUND",
+          "message": "No safety profile found for the specified vehicle.",
+          "details": {
+            "vehicleId": "1002"
+          }
+        }
+      }
+order: 3000

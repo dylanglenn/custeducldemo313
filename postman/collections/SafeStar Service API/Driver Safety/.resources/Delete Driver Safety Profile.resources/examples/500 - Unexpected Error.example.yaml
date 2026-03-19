@@ -1,0 +1,24 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/driver/:id"
+  method: DELETE
+  headers:
+    Accept: application/json
+  pathVariables:
+    id: "1001"
+response:
+  statusCode: 500
+  statusText: Internal Server Error
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "error": {
+          "code": "UNEXPECTED_ERROR",
+          "message": "An unexpected error occurred.",
+          "details": {}
+        }
+      }
+order: 3000

@@ -1,6 +1,9 @@
 $kind: http-request
 url: "{{baseUrl}}/vehicle/:id"
 method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
 pathVariables:
   id: "1002"
 body:
@@ -16,7 +19,13 @@ body:
       "airbags": "OK",
       "battery": "OK",
       "newCode": true,
-      "activeCodes": ["P0300", "P0420", "P0455", "P0171", "P0128"]
+      "activeCodes": [
+        "P0300",
+        "P0420",
+        "P0455",
+        "P0171",
+        "P0128"
+      ]
     }
 examples: ./.resources/Create Vehicle Safety Profile.resources/examples
 order: 2000

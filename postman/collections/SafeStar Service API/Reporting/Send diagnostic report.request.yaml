@@ -1,6 +1,8 @@
 $kind: http-request
 url: "{{baseUrl}}/diagnostics/send/:id"
 method: POST
+headers:
+  Accept: application/json
 pathVariables:
   id: "1"
 examples: ./.resources/Send diagnostic report.resources/examples

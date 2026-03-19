@@ -1,6 +1,8 @@
 $kind: http-request
 url: "{{baseUrl}}/diagnostics/:id"
 method: GET
+headers:
+  Accept: application/json
 pathVariables:
   id: "1"
 examples: ./.resources/Retrieve diagnostic report.resources/examples

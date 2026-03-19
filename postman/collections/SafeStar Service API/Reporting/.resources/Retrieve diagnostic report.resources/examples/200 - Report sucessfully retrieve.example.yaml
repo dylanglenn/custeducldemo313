@@ -2,6 +2,8 @@ $kind: http-example
 request:
   url: "{{baseUrl}}/diagnostics/:id"
   method: GET
+  headers:
+    Accept: application/json
   pathVariables:
     id: "1"
 response:
@@ -13,100 +15,100 @@ response:
     type: json
     content: >-
       {
-          "id": "{{$pathSegments '1'}}",
-          "status": "success",
-          "report": {
-              "timestamp": "2026-03-13T10:15:00Z",
-              "status": "FAILED",
-              "job": {
-                  "jobId": "JOB-784512",
-                  "type": "VehicleSafetyScan",
-                  "completed": true,
-                  "durationMs": 4823,
-                  "apiVersion": "v2.4.1"
+        "id": "{{$pathSegments '1'}}",
+        "status": "success",
+        "report": {
+          "timestamp": "2026-03-13T10:15:00Z",
+          "status": "FAILED",
+          "job": {
+            "jobId": "JOB-784512",
+            "type": "VehicleSafetyScan",
+            "completed": true,
+            "durationMs": 4823,
+            "apiVersion": "v2.4.1"
+          },
+          "vehicle": {
+            "id": 1,
+            "vin": "1HGCM82633A004352",
+            "make": "Honda",
+            "model": "Accord",
+            "year": 2020,
+            "mileage": 45000
+          },
+          "checks": {
+            "tpms": {
+              "status": "OK",
+              "severity": "NONE"
+            },
+            "tailLights": {
+              "status": "OK",
+              "severity": "NONE"
+            },
+            "oilPressure": {
+              "status": "OK",
+              "severity": "NONE"
+            },
+            "sensors": {
+              "status": "OK",
+              "severity": "NONE"
+            },
+            "defrost": {
+              "status": "OK",
+              "severity": "NONE"
+            },
+            "airbags": {
+              "status": "OK",
+              "severity": "NONE"
+            },
+            "battery": {
+              "status": "OK",
+              "voltage": 12.6,
+              "severity": "NONE"
+            }
+          },
+          "diagnostics": {
+            "newCodeDetected": true,
+            "activeCodes": [
+              {
+                "code": "P0300",
+                "description": "Random/Multiple Cylinder Misfire Detected",
+                "severity": "CRITICAL",
+                "recommendedAction": "Inspect ignition system, spark plugs, and fuel injectors immediately."
               },
-              "vehicle": {
-                  "id": 123,
-                  "vin": "1HGCM82633A004352",
-                  "make": "Honda",
-                  "model": "Accord",
-                  "year": 2020,
-                  "mileage": 45000
+              {
+                "code": "P0420",
+                "description": "Catalyst System Efficiency Below Threshold",
+                "severity": "MAJOR",
+                "recommendedAction": "Inspect catalytic converter and oxygen sensors."
               },
-              "checks": {
-                  "tpms": {
-                      "status": "OK",
-                      "severity": "NONE"
-                  },
-                  "tailLights": {
-                      "status": "OK",
-                      "severity": "NONE"
-                  },
-                  "oilPressure": {
-                      "status": "OK",
-                      "severity": "NONE"
-                  },
-                  "sensors": {
-                      "status": "OK",
-                      "severity": "NONE"
-                  },
-                  "defrost": {
-                      "status": "OK",
-                      "severity": "NONE"
-                  },
-                  "airbags": {
-                      "status": "OK",
-                      "severity": "NONE"
-                  },
-                  "battery": {
-                      "status": "OK",
-                      "voltage": 12.6,
-                      "severity": "NONE"
-                  }
+              {
+                "code": "P0455",
+                "description": "Evaporative Emission System Leak (Large Leak)",
+                "severity": "MAJOR",
+                "recommendedAction": "Check fuel cap, EVAP hoses, and purge valve."
               },
-              "diagnostics": {
-                  "newCodeDetected": true,
-                  "activeCodes": [
-                      {
-                          "code": "P0300",
-                          "description": "Random/Multiple Cylinder Misfire Detected",
-                          "severity": "CRITICAL",
-                          "recommendedAction": "Inspect ignition system, spark plugs, and fuel injectors immediately."
-                      },
-                      {
-                          "code": "P0420",
-                          "description": "Catalyst System Efficiency Below Threshold",
-                          "severity": "MAJOR",
-                          "recommendedAction": "Inspect catalytic converter and oxygen sensors."
-                      },
-                      {
-                          "code": "P0455",
-                          "description": "Evaporative Emission System Leak (Large Leak)",
-                          "severity": "MAJOR",
-                          "recommendedAction": "Check fuel cap, EVAP hoses, and purge valve."
-                      },
-                      {
-                          "code": "P0171",
-                          "description": "System Too Lean (Bank 1)",
-                          "severity": "MAJOR",
-                          "recommendedAction": "Inspect for vacuum leaks and check fuel delivery system."
-                      },
-                      {
-                          "code": "P0128",
-                          "description": "Coolant Thermostat Temperature Below Regulating Temperature",
-                          "severity": "MODERATE",
-                          "recommendedAction": "Inspect thermostat and coolant temperature sensor."
-                      }
-                  ],
-                  "failureReason": "Active diagnostic trouble codes detected during safety scan."
+              {
+                "code": "P0171",
+                "description": "System Too Lean (Bank 1)",
+                "severity": "MAJOR",
+                "recommendedAction": "Inspect for vacuum leaks and check fuel delivery system."
               },
-              "summary": {
-                  "overallSafetyStatus": "NOT SAFE TO RELEASE",
-                  "criticalIssues": 1,
-                  "majorIssues": 3,
-                  "moderateIssues": 1,
-                  "notes": "Vehicle passed physical safety component checks but failed due to active engine diagnostic trouble codes."
+              {
+                "code": "P0128",
+                "description": "Coolant Thermostat Temperature Below Regulating Temperature",
+                "severity": "MODERATE",
+                "recommendedAction": "Inspect thermostat and coolant temperature sensor."
               }
+            ],
+            "failureReason": "Active diagnostic trouble codes detected during safety scan."
+          },
+          "summary": {
+            "overallSafetyStatus": "NOT SAFE TO RELEASE",
+            "criticalIssues": 1,
+            "majorIssues": 3,
+            "moderateIssues": 1,
+            "notes": "Vehicle passed physical safety component checks but failed due to active engine diagnostic trouble codes."
           }
+        }
       }
 order: 1000

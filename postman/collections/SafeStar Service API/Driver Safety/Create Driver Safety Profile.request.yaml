@@ -1,10 +1,13 @@
 $kind: http-request
 url: "{{baseUrl}}/driver/:id"
 method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
 pathVariables:
   id: "1001"
 body:
   type: json
-  content: ""
+  content: "{}"
 examples: ./.resources/Create Driver Safety Profile.resources/examples
 order: 1000
