@@ -1,4 +1,5 @@
 $kind: http-request
+name: Get message display upon completed safety checks
 url: "{{baseUrl}}/display"
 method: GET
 headers:
@@ -11,4 +12,6 @@ body:
       "driver": "1001",
       "vehicle": "1002"
     }
-order: 1000
+examples: ./.resources/Get message display upon completed safety
+  checks.resources/examples
+order: 1774017455311

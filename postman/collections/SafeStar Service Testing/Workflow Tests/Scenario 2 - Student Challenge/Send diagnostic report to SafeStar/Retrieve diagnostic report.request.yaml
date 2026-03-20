@@ -1,5 +1,6 @@
 $kind: http-request
-url: "{{baseUrl}}:/diagnostics/:id"
+name: Retrieve diagnostic report
+url: "{{baseUrl}}/diagnostics/:id"
 method: GET
 pathVariables:
   id: "1"

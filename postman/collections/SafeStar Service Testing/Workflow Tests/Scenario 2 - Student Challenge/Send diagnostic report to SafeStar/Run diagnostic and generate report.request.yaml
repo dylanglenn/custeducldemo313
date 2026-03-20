@@ -3,8 +3,7 @@ name: Run diagnostic and generate report
 url: "{{baseUrl}}/diagnostics/generate/:vehicleId"
 method: POST
 headers:
-  Accept: application/json
+  x-mock-response-code: "201"
 pathVariables:
   vehicleId: "1002"
-examples: ./.resources/Run diagnostic and generate report.resources/examples
 order: 1000

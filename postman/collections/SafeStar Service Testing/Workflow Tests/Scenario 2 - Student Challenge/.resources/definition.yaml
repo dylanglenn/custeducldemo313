@@ -1,6 +1,7 @@
 $kind: collection
+name: Scenario 2 - Student Challenge
 scripts:
-  - type: http:beforeRequest
+  - type: http:afterResponse
     code: >-
       pm.test("Status code is one of the expected values", () => {
           // Define an array of acceptable status codes
@@ -10,4 +11,4 @@ scripts:
           pm.expect(pm.response.code).to.be.oneOf(expectedStatusCodes);
       });
     language: text/javascript
-order: 1000
+order: 3000
