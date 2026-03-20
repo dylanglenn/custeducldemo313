@@ -1,9 +1,6 @@
 name: Dev
 values:
   - key: baseUrl
-    value: 'https://b7a35e0d-179a-4374-a049-7230404e4fe9.mock.pstmn.io'
-    enabled: true
-  - key: driverFirstName
-    value: Alex
+    value: https://b7a35e0d-179a-4374-a049-7230404e4fe9.mock.pstmn.io
     enabled: true
 color: 0

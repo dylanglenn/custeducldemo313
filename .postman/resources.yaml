@@ -11,7 +11,7 @@ cloudResources:
     ../postman/environments/Stage.environment.yaml: 51749748-b15927af-682c-41bc-9653-bc4f725000fe
     ../postman/environments/Dev.environment.yaml: 51749748-bc3f0552-df34-4326-bcc2-33538a140d0a
     ../postman/environments/Prod.environment.yaml: 51749748-ceda5ed8-7189-4273-bca4-1dd787e1db0e
-    ../postman/environments/Local.environment.yaml: 97009935-bb94-4174-ae59-113e993d7ed5
+    ../postman/environments/Local.environment.yaml: 51749748-97009935-bb94-4174-ae59-113e993d7ed5
   specs:
     ../index.yaml: 663e156b-2319-4876-8e55-f4152293b45e
 
