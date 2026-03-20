@@ -1,5 +1,6 @@
 $kind: http-request
-url: "{{baseUrl}}:/vehicle/:id"
+name: Update Vehicle Profile Upon Scan Completion
+url: "{{baseUrl}}/vehicle/:id"
 method: PATCH
 pathVariables:
   id: "1002"

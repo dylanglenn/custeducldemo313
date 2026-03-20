@@ -1,5 +1,6 @@
 $kind: http-request
-url: "{{baseUrl}}:/driver/:id"
+name: Confirm Driver Profile Exists
+url: "{{baseUrl}}/driver/:id"
 method: GET
 pathVariables:
   id: "1001"
