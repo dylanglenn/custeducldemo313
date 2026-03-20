@@ -20,8 +20,6 @@ jobs:
       - name: Run API tests
         run: |
           postman collection run "51749748-e184ecaa-4e9c-4dbe-923a-5aed72428211" -i Scenario\ 1\ -\ Successful\ startup\ and\ safety\ check\ with\ message\ display\ for\ existing\ driver\ and\ vehicle -e "51749748-bc3f0552-df34-4326-bcc2-33538a140d0a"
-          postman collection run "51749748-e184ecaa-4e9c-4dbe-923a-5aed72428211" -i Scenario\ 1\ -\ Successful\ startup\ and\ safety\ check\ with\ message\ display\ for\ existing\ driver\ and\ vehicle -e "51749748-b15927af-682c-41bc-9653-bc4f725000fe"
-          postman collection run "51749748-e184ecaa-4e9c-4dbe-923a-5aed72428211" -i Scenario\ 1\ -\ Successful\ startup\ and\ safety\ check\ with\ message\ display\ for\ existing\ driver\ and\ vehicle -e "51749748-ceda5ed8-7189-4273-bca4-1dd787e1db0e"
       - name: Lint Service Specification
         run: |
           postman spec lint "L1VzZXJzL2R5bGFuZ2xlbm4vRG9jdW1lbnRzL3YxMl9kZW1vcy8zMTMvY3VzdGVkdWNsZGVtbzMxMy9pbmRleC55YW1s"
