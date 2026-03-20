@@ -6,4 +6,4 @@ headers:
 pathVariables:
   id: "1002"
 examples: ./.resources/Retrieve Vehicle Safety Profile.resources/examples
-order: 3000
+order: 4000

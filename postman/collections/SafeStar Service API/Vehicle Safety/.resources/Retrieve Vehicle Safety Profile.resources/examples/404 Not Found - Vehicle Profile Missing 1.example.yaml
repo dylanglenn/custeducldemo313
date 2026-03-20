@@ -1,7 +1,7 @@
 $kind: http-example
 name: 404 Not Found - Vehicle Profile Missing
 request:
-  url: "{{baseUrl}}/vehicle/:id"
+  url: "{{baseUrl}}:/vehicle/:id"
   method: GET
   headers:
     Accept: application/json

@@ -1,0 +1,3 @@
+$kind: collection
+name: Existing driver starts vehicle and initializes SafeStar with app
+order: 4000

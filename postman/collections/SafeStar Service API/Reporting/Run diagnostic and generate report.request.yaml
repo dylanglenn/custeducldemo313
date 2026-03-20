@@ -1,5 +1,4 @@
 $kind: http-request
-name: Run diagnostic and generate report
 url: "{{baseUrl}}/diagnostics/generate/:vehicleId"
 method: POST
 headers:

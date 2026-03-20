@@ -29,7 +29,7 @@ variables:
   driverFirstName: ""
   baseUrl: "{{baseUrl}}"
 auth:
-  - id: c68c6975-e72d-455a-ac77-d894f0a6c7e0
+  - id: 3df8a546-03fb-4fe2-86fe-d187224fada8
     type: apikey
     name: apikey auth
     credentials:

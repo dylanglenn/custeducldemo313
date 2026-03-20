@@ -28,4 +28,4 @@ body:
       ]
     }
 examples: ./.resources/Create Vehicle Safety Profile.resources/examples
-order: 2000
+order: 3000

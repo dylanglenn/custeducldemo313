@@ -1,0 +1,3 @@
+$kind: collection
+name: Driver ends trip and turns off vehicle trigger driver safety metrics update
+order: 6000

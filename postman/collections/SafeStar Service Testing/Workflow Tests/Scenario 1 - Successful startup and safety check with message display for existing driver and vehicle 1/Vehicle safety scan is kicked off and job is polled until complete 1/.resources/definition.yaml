@@ -1,0 +1,3 @@
+$kind: collection
+name: Vehicle safety scan is kicked off and job is polled until complete
+order: 5000

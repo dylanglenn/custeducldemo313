@@ -1,5 +1,4 @@
 $kind: collection
-name: Scenario 2 - Student Challenge
 scripts:
   - type: http:afterResponse
     code: >-
@@ -11,4 +10,4 @@ scripts:
           pm.expect(pm.response.code).to.be.oneOf(expectedStatusCodes);
       });
     language: text/javascript
-order: 3000
+order: 2000

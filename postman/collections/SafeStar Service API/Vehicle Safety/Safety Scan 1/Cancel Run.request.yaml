@@ -1,0 +1,9 @@
+$kind: http-request
+url: "{{baseUrl}}/run/:id"
+method: DELETE
+headers:
+  Accept: application/json
+pathVariables:
+  id: "1"
+examples: ./.resources/Cancel Run.resources/examples
+order: 3000

@@ -1,5 +1,5 @@
 $kind: http-request
-url: "{{baseUrl}}:/vehicle/:id"
+url: "{{baseUrl}}/vehicle/:id"
 method: GET
 pathVariables:
   id: "1002"
