@@ -1,6 +1,6 @@
 $kind: http-example
 request:
-  url: "{{baseUrl}}:/diagnostics/send/:id"
+  url: "{{baseUrl}}/diagnostics/send/:id"
   method: POST
   pathVariables:
     id: "1"

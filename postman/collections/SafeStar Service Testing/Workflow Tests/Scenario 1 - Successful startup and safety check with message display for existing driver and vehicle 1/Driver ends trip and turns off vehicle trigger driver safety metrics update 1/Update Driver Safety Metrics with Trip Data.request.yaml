@@ -1,6 +1,8 @@
 $kind: http-request
 url: "{{baseUrl}}/driver/:id"
 method: PUT
+headers:
+  x-mock-response-code: "200"
 pathVariables:
   id: "1001"
 body:

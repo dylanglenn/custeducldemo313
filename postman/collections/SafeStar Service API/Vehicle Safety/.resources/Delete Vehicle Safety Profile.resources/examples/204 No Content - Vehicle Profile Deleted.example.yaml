@@ -1,6 +1,6 @@
 $kind: http-example
 request:
-  url: "{{baseUrl}}:/vehicle/:id"
+  url: "{{baseUrl}}/vehicle/:id"
   method: DELETE
   pathVariables:
     id: "1002"

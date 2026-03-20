@@ -1,7 +1,7 @@
 $kind: http-example
 name: 200 - Completed run retrieved successfully
 request:
-  url: "{{baseUrl}}:/run/:id"
+  url: "{{baseUrl}}/run/:id"
   method: GET
   headers:
     Accept: application/json

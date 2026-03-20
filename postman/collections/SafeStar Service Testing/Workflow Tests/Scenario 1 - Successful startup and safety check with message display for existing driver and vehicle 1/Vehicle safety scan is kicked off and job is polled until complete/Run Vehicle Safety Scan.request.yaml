@@ -1,6 +1,8 @@
 $kind: http-request
 url: "{{baseUrl}}/run"
 method: POST
+headers:
+  x-mock-response-code: "201"
 body:
   type: json
   content: ""
