@@ -1,0 +1,65 @@
+$kind: http-request
+url: "{{baseUrl}}/driver/:id"
+method: GET
+pathVariables:
+  id: "1001"
+scripts:
+  - type: afterResponse
+    code: >-
+      pm.variables.set("driverFirstName", pm.response.json().driver.firstName);
+
+
+      pm.test("Driver profile response is properly formed", function () {
+
+        const schema = {
+          type: "object",
+          required: [
+            "profileId",
+            "driver",
+            "safetyScore",
+            "hardStops",
+            "speeding",
+            "nightDrives",
+            "weather",
+            "ignoredWarnings"
+          ],
+          properties: {
+            profileId: { type: "string" },
+            driver: {
+              type: "object",
+              required: ["firstName", "lastName", "license", "email"],
+              properties: {
+                firstName: { type: "string" },
+                lastName: { type: "number" },
+                email: { type: "string" },
+                license: {
+                  type: "object",
+                  required: ["issueDate", "expiry", "issuingState", "restrictions"],
+                  properties: {
+                    issueDate: { type: "string" },
+                    expiry: { type: "string" },
+                    issuingState: { type: "string" },
+                    restrictions: {
+                      type: "array",
+                      items: { type: "string" }
+                    }
+                  },
+                  additionalProperties: true
+                }
+              },
+              additionalProperties: true
+            },
+            safetyScore: { type: "number" },
+            hardStops: { type: "number" },
+            speeding: { type: "number" },
+            nightDrives: { type: "number" },
+            weather: { type: "number" },
+            ignoredWarnings: { type: "number" }
+          },
+          additionalProperties: true
+        };
+
+        pm.response.to.have.jsonSchema(schema);
+      });
+    language: text/javascript
+order: 1000

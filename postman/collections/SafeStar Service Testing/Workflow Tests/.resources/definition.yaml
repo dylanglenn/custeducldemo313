@@ -1,2 +1,8 @@
 $kind: collection
+auth:
+  - id: 4a77847d-4eec-4a0a-897e-35d70dbcbd49
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{jwt_signed}}"
 order: 1000

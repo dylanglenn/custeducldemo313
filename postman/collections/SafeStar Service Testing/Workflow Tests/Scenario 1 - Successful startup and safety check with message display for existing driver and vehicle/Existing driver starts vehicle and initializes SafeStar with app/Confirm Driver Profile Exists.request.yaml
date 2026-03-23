@@ -5,7 +5,6 @@ pathVariables:
   id: "1001"
 scripts:
   - type: afterResponse
-    code: pm.collectionVariables.set("driverFirstName",
-      pm.response.json().driver.firstName);
+    code: pm.variables.set("driverFirstName", pm.response.json().driver.firstName);
     language: text/javascript
 order: 1000

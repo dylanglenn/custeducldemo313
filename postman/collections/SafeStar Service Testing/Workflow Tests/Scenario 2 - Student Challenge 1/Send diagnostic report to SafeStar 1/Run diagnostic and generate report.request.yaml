@@ -1,8 +1,0 @@
-$kind: http-request
-url: "{{baseUrl}}/diagnostics/generate/:vehicleId"
-method: POST
-headers:
-  x-mock-response-code: "201"
-pathVariables:
-  vehicleId: "1002"
-order: 1000

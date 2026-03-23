@@ -17,9 +17,13 @@ jobs:
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
-      - name: Run API tests
+      - name: Run API Tests with Collection/Folder
         run: |
-          postman collection run "51749748-e184ecaa-4e9c-4dbe-923a-5aed72428211" -i Scenario\ 1\ -\ Successful\ startup\ and\ safety\ check\ with\ message\ display\ for\ existing\ driver\ and\ vehicle -e "51749748-bc3f0552-df34-4326-bcc2-33538a140d0a" --report-events
+          postman collection run "postman/collections/SafeStar\ Service\ Testing" -i Scenario\ 1\ -\ Successful\ startup\ and\ safety\ check\ with\ message\ display\ for\ existing\ driver\ and\ vehicle -e "51749748-bc3f0552-df34-4326-bcc2-33538a140d0a"
+      - name: Run API Tests with Monitor
+        run: |
+          postman monitor run "<REPLACE_THIS_WITH_YOUR_MONITOR_ID>"
+        continue-on-error: true
       - name: Lint Service Specification
         run: |
           postman spec lint "663e156b-2319-4876-8e55-f4152293b45e" -f error

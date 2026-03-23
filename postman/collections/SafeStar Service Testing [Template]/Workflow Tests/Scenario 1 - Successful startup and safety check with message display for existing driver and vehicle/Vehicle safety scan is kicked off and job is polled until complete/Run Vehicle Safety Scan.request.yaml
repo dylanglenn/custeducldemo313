@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/run"
+method: POST
+headers:
+  x-mock-response-code: "201"
+body:
+  type: json
+  content: ""
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 201", function () {
+          pm.response.to.have.status(201);
+      });
+    language: text/javascript
+order: 1000

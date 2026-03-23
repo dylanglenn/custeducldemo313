@@ -1,0 +1,10 @@
+$kind: http-request
+url: https://postman-echo.com/get
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: pm.environment.unset("jwt_signed");
+    language: text/javascript
+order: 1000

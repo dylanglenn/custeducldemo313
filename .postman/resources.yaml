@@ -5,6 +5,7 @@ workspace:
 # Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
 cloudResources:
   collections:
+    ../postman/collections/SafeStar Service Testing [Template]: 51749748-ef432b1a-1328-4e19-8c4b-d172cf4dcba2
     ../postman/collections/SafeStar Service API: 51749748-4e5a1869-b5b7-4c98-bee4-7ccfd59217cf
     ../postman/collections/SafeStar Service Testing: 51749748-e184ecaa-4e9c-4dbe-923a-5aed72428211
   environments:

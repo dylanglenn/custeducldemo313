@@ -1,35 +1,8 @@
 $kind: collection
-description: >-
-  This collection contains the SafeStar Service API requests used to manage
-  safety profiles, run safety scans, and generate diagnostics reports.
-
-
-  ## Base URL
-
-  All requests use `{{baseUrl}}` as the API host (set this in your active
-  environment, e.g., Dev/Stage/Prod).
-
-
-  ## Folders / workflows
-
-  - **Driver Safety**: Create / retrieve / update / delete a driver safety
-  profile.
-
-  - **Vehicle Safety**: Create / retrieve / update / delete a vehicle safety
-  profile.
-
-  - **Safety Scan**: Start a scan run, check run status, or cancel a run.
-
-  - **Display**: Retrieve the completion message shown after safety checks
-  finish.
-
-  - **Reporting**: Generate diagnostics for a vehicle, retrieve a diagnostic
-  report, and send the report.
 variables:
-  driverFirstName: ""
   baseUrl: "{{baseUrl}}"
 auth:
-  - id: f652f473-de25-4bc7-a8f4-2194158892fa
+  - id: 93b5f4f4-a1eb-428e-9079-d9a258cb1192
     type: apikey
     name: apikey auth
     credentials:

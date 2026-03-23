@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/driver/:id"
+method: GET
+pathVariables:
+  id: "1001"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("SafetyScore is a number", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.safetyScore).to.be.a('string');
+      });
+    language: text/javascript
+order: 1000
