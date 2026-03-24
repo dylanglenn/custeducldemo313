@@ -1,6 +1,31 @@
 $kind: http-request
+name: Confirm Vehicle Profile Exists
 url: "{{baseUrl}}/vehicle/:id"
 method: GET
 pathVariables:
   id: "1002"
+scripts:
+  - type: afterResponse
+    code: |+
+      const vinDecode = pm.require('npm:vin-decode@0.2.0');
+      const qaWorkshopPackage = pm.require('@postvehicle-enterprise-team-b7cf0c6a-39c8-436a-bede-fd9ea42b/qa_workshop_package');
+
+      var jsonData = pm.response.json();
+
+      pm.test("VIN is a validly-formatted string", function () {
+          console.log("Checking VIN: " + jsonData.vehicle.vin + " ...");
+          pm.expect(jsonData.vehicle.vin).to.be.a.string;
+          pm.expect(qaWorkshopPackage.isValidVIN(jsonData.vehicle.vin)).to.be.true;
+      });
+
+      console.log("Here is the vehicle info for VIN: " + jsonData.vehicle.vin);
+      console.log(vinDecode(jsonData.vehicle.vin).decode());
+
+
+    language: text/javascript
+    packages:
+      "@postvehicle-enterprise-team-b7cf0c6a-39c8-436a-bede-fd9ea42b/qa_workshop_package":
+        id: 019ce8dc-162e-704d-bb26-40700db2e396
+      npm:vin-decode@0.2.0:
+        id: npm:vin-decode@0.2.0
 order: 2000

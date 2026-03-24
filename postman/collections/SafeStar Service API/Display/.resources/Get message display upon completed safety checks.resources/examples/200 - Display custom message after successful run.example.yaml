@@ -21,7 +21,7 @@ response:
     type: json
     content: >-
       {
-        "message": "{{driverFirstName}}",
-        "html": "<div>🚗✅ Hey \"\"! Safety score: <b>100</b>—perfect drive vibes 😄 Keep it up: smooth accel/brake + stay alert. New codes found: <b>P0300</b>(misfire), <b>P0420</b>(catalyst), <b>P0455</b>(EVAP leak—check gas cap), <b>P0171</b>(lean), <b>P0128</b>(coolant/thermostat). 📅 Book service soon to avoid mpg drop. 🔧</div>"
+        "message": " Hey {{driverFirstName}} ! Safety score: 100 - perfect drive vibes 😄 Keep it up: smooth accel/brake + stay alert. New codes found: P0300(misfire), P0420(catalyst), P0455(EVAP leak—check gas cap), P0171(lean), P0128(coolant/thermostat). 📅 Book service soon to avoid mpg drop. 🔧",
+        "html": "<div>🚗✅ Hey {{driverFirstName}} \"\"! Safety score: <b>100</b>—perfect drive vibes 😄 Keep it up: smooth accel/brake + stay alert. New codes found: <b>P0300</b>(misfire), <b>P0420</b>(catalyst), <b>P0455</b>(EVAP leak—check gas cap), <b>P0171</b>(lean), <b>P0128</b>(coolant/thermostat). 📅 Book service soon to avoid mpg drop. 🔧</div>"
       }
 order: 1000

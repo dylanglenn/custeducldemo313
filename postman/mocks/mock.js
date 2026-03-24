@@ -9,14 +9,14 @@ const server = http.createServer((req, res) => {
   // === DISPLAY ===
 
   // @endpoint GET /display
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Display/Get message display upon completed safety checks.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Display/.resources/Get message display upon completed safety checks.resources/examples/200 - Display Custom Message Successfully.example.yaml", res);
+  if (method == "GET" && url == "/display") {
+    return pm.mock.sendExample("postman/collections/SafeStar Service API/Display/.resources/Get message display upon completed safety checks.resources/examples/200 - Display custom message after successful run.example.yaml", res);
   }
 
   // === DRIVER SAFETY ===
 
   // @endpoint POST /driver/:id
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Driver Safety/Create Driver Safety Profile.request.yaml", req)) {
+  if (method == "POST" && url == "/driver/:id") {
     return pm.mock.sendExample("postman/collections/SafeStar Service API/Driver Safety/.resources/Create Driver Safety Profile.resources/examples/201 Created - Profile Created.example.yaml", res);
   }
 
