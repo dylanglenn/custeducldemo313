@@ -2,7 +2,33 @@ openapi: 3.0.0
 info:
   title: SafeStar Service API
   version: 1.0.0
-  description: ''
+  description: >-
+    This collection contains the SafeStar Service API requests used to manage
+    safety profiles, run safety scans, and generate diagnostics reports.
+
+
+    ## Base URL
+
+    All requests use `{{baseUrl}}` as the API host (set this in your active
+    environment, e.g., Dev/Stage/Prod).
+
+
+    ## Folders / workflows
+
+    - **Driver Safety**: Create / retrieve / update / delete a driver safety
+    profile.
+
+    - **Vehicle Safety**: Create / retrieve / update / delete a vehicle safety
+    profile.
+
+    - **Safety Scan**: Start a scan run, check run status, or cancel a run.
+
+    - **Display**: Retrieve the completion message shown after safety checks
+    finish.
+
+    - **Reporting**: Generate diagnostics for a vehicle, retrieve a diagnostic
+    report, and send the report.
+
 servers:
   - url: '{{baseUrl}}'
 paths:
