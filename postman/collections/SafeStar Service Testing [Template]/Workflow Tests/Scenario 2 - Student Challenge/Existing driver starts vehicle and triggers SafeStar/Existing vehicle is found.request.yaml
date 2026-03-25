@@ -1,8 +1,10 @@
 $kind: http-request
+name: Existing vehicle is found
 url: "{{baseUrl}}/vehicle/:id"
 method: GET
 pathVariables:
-  id: "1002"
+  - key: id
+    value: "1002"
 scripts:
   - type: afterResponse
     code: |-

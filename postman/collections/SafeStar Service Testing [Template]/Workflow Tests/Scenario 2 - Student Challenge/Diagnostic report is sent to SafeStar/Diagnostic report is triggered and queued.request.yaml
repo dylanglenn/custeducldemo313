@@ -1,10 +1,13 @@
 $kind: http-request
+name: Diagnostic report is triggered and queued
 url: "{{baseUrl}}/diagnostics/generate/:vehicleId"
 method: POST
 headers:
-  x-mock-response-code: "201"
+  - key: x-mock-response-code
+    value: "201"
 pathVariables:
-  vehicleId: "1002"
+  - key: vehicleId
+    value: "1002"
 scripts:
   - type: afterResponse
     code: |-

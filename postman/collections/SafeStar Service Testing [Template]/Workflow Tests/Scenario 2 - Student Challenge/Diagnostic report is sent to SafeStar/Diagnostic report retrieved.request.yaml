@@ -1,8 +1,10 @@
 $kind: http-request
+name: Diagnostic report retrieved
 url: "{{baseUrl}}/diagnostics/:id"
 method: GET
 pathVariables:
-  id: "1"
+  - key: id
+    value: "1"
 scripts:
   - type: afterResponse
     code: |-

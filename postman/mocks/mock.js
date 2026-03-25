@@ -1,7 +1,7 @@
 const http = require('http');
 
 const server = http.createServer((req, res) => {
-  const { method, url } = req;
+  const { method, url, headers } = req;
 
   // ─── DISPLAY ───────────────────────────────────────────────────────────────
 
@@ -9,8 +9,8 @@ const server = http.createServer((req, res) => {
   if (method === 'GET' && url === '/display') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
-      "message": "Alex",
-      "html": "<div>🚗✅ Hey \"\"! Safety score: <b>100</b>—perfect drive vibes 😄 Keep it up: smooth accel/brake + stay alert. New codes found: <b>P0300</b>(misfire), <b>P0420</b>(catalyst), <b>P0455</b>(EVAP leak—check gas cap), <b>P0171</b>(lean), <b>P0128</b>(coolant/thermostat). 📅 Book service soon to avoid mpg drop. 🔧</div>"
+      "message": " Hey Alex! Safety score: 100 - perfect drive vibes 😄 Keep it up: smooth accel/brake + stay alert. New codes found: P0300(misfire), P0420(catalyst), P0455(EVAP leak—check gas cap), P0171(lean), P0128(coolant/thermostat). 📅 Book service soon to avoid mpg drop. 🔧",
+      "html": "<div>🚗✅ Hey Alex! Safety score: <b>100</b>—perfect drive vibes 😄 Keep it up: smooth accel/brake + stay alert. New codes found: <b>P0300</b>(misfire), <b>P0420</b>(catalyst), <b>P0455</b>(EVAP leak—check gas cap), <b>P0171</b>(lean), <b>P0128</b>(coolant/thermostat). 📅 Book service soon to avoid mpg drop. 🔧</div>"
     }));
     return;
   }
@@ -125,7 +125,7 @@ const server = http.createServer((req, res) => {
         "updatedAt": "2026-03-12T10:25:01.000Z",
         "status": "ACTIVE",
         "riskScore": 12,
-        "vin": "{VEHICLE_IDENTIFICATION_NUMBER}",
+        "vin": "1HGCM82633A004352",
         "make": "Toyota",
         "model": "Camry",
         "year": 2021,
@@ -145,7 +145,7 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify({
       "vehicle": {
         "id": 123,
-        "vin": "{VEHICLE_IDENTIFICATION_NUMBER}",
+        "vin": "1HGCM82633A004352",
         "make": "Honda",
         "model": "Accord",
         "year": 2020,
@@ -171,7 +171,7 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
-        "vin": "{VEHICLE_IDENTIFICATION_NUMBER}",
+        "vin": "1HGCM82633A004352",
         "tpms": "OK",
         "tailLights": "OK",
         "oilPressure": "OK",
@@ -196,6 +196,22 @@ const server = http.createServer((req, res) => {
   // ─── SAFETY SCAN ───────────────────────────────────────────────────────────
 
   // @endpoint POST /run
+  if (method === 'POST' && url === '/run' && headers['x-mock-response-code'] === '500') {
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+            "error": {
+            "code": "UNEXPECTED_ERROR",
+            "message": "An unexpected error occurred.",
+            "details": {}
+        }
+    }));
+    });
+    return;
+  }
+
   if (method === 'POST' && url === '/run') {
     let body = '';
     req.on('data', chunk => (body += chunk));

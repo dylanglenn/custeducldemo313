@@ -1,9 +1,10 @@
 $kind: http-request
-name: Run Vehicle Safety Scan
+name: Safety scan encounters unexpected error
 url: "{{baseUrl}}/run"
 method: POST
 headers:
-  x-mock-response-code: "201"
+  - key: x-mock-response-code
+    value: "500"
 body:
   type: json
   content: |-

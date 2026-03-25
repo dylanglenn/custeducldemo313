@@ -6,6 +6,30 @@ request:
     Accept: application/json
   pathVariables:
     id: "1001"
+  body:
+    type: json
+    content: |-
+      {
+        "driver": {
+          "firstName": "Alex",
+          "lastName": "Johnson",
+          "license": {
+            "issueDate": "2022-05-14",
+            "expiry": "2026-05-14",
+            "issuingState": "CA",
+            "restrictions": [
+              "B"
+            ]
+          },
+          "email": "alex.johnson@example.com"
+        },
+        "safetyScore": 95,
+        "hardStops": 0,
+        "speeding": 1,
+        "nightDrives": 0,
+        "weather": 0,
+        "ignoredWarnings": 0
+      }
 response:
   statusCode: 500
   statusText: Internal Server Error

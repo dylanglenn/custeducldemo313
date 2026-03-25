@@ -1,9 +1,16 @@
 $kind: http-request
+name: Update Vehicle Safety Profile
 url: "{{baseUrl}}/vehicle/:id"
 method: PATCH
 headers:
   Accept: application/json
 pathVariables:
   id: "1002"
+body:
+  type: json
+  content: |-
+    {
+        "newCode": false
+    }
 examples: ./.resources/Update Vehicle Safety Profile.resources/examples
 order: 4000

@@ -7,8 +7,10 @@ pathVariables:
 scripts:
   - type: afterResponse
     code: >
-      pm.test("Driver profile response is properly formed", function () {
+      pm.environment.set("driverFirstName",
+      pm.response.json().driver.firstName);
 
+      pm.test("Driver profile response is properly formed", function () {
         const schema = {
           type: "object",
           required: [

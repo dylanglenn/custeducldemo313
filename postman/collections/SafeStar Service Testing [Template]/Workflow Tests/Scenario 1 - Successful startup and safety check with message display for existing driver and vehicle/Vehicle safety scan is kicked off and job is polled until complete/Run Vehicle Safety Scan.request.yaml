@@ -1,11 +1,16 @@
 $kind: http-request
+name: Run Vehicle Safety Scan
 url: "{{baseUrl}}/run"
 method: POST
 headers:
   x-mock-response-code: "201"
 body:
   type: json
-  content: ""
+  content: |-
+    {
+      "vehicle": "1002",
+      "driver": "1001"
+    }
 scripts:
   - type: afterResponse
     code: |-

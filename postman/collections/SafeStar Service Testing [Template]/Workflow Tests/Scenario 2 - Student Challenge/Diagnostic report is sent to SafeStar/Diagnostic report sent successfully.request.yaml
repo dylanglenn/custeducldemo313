@@ -1,10 +1,13 @@
 $kind: http-request
+name: Diagnostic report sent successfully
 url: "{{baseUrl}}/diagnostics/send/:id"
 method: POST
 headers:
-  x-mock-response-code: "204"
+  - key: x-mock-response-code
+    value: "204"
 pathVariables:
-  id: "1"
+  - key: id
+    value: "1"
 scripts:
   - type: afterResponse
     code: |-

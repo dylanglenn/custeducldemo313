@@ -7,6 +7,12 @@ request:
     Content-Type: application/json
   pathVariables:
     id: "1002"
+  body:
+    type: json
+    content: |-
+      {
+          "newCode": false
+      }
 response:
   statusCode: 200
   statusText: OK

@@ -1,10 +1,16 @@
 $kind: http-request
+name: Unset JWT Auth
 url: https://postman-echo.com/get
 method: GET
 headers:
   Accept: application/json
 scripts:
   - type: afterResponse
-    code: pm.environment.unset("jwt_signed");
+    code: |-
+      pm.environment.unset("jwt_signed");
+
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
     language: text/javascript
 order: 1000
