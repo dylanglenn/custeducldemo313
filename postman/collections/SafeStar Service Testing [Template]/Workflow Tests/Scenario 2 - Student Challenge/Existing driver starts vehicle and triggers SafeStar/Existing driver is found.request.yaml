@@ -1,5 +1,5 @@
 $kind: http-request
-name: Existing driver is found by
+name: Existing driver is found
 url: "{{baseUrl}}/driver/:id"
 method: GET
 pathVariables:

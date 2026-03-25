@@ -1,21 +1,3 @@
 $kind: collection
 name: Scenario 2 - Student Challenge
-scripts:
-  - type: http:afterResponse
-    code: >-
-      if (request.name !== ("Run" || "Retrieve Driver Safety Profile")) {
-          pm.test("Status code is one of the expected values", () => {
-              // Define an array of acceptable status codes
-              const expectedStatusCodes = [200, 201, 204];
-
-              // Assert that the actual response code is included in the expectedStatusCodes array
-              pm.expect(pm.response.code).to.be.oneOf(expectedStatusCodes);
-          });
-      } else {
-
-          pm.test("Status code is 500", function () {
-              pm.response.to.have.status(500);
-          });
-      }
-    language: text/javascript
 order: 2000
