@@ -1,2 +1,4 @@
 $kind: collection
+description: |-
+  Endpoints for managing Vehicle Safety Profiles within the SafeStar Service. A Vehicle Safety Profile captures the safety state of a specific vehicle, identified by its ID from the upstream Vehicle Service, including sensor statuses (TPMS, airbags, battery, oil pressure, etc.) and active OBD-II diagnostic codes. This folder provides the full set of CRUD operations for vehicle profiles, as well as a nested Safety Scan subfolder for triggering and managing asynchronous safety scan runs against a driver-vehicle pairing. Vehicle IDs used here should correspond to valid vehicles already registered in the Vehicle Service.
 order: 2000

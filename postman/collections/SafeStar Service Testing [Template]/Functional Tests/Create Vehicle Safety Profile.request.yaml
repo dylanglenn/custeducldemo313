@@ -1,0 +1,160 @@
+$kind: http-request
+name: Create Vehicle Safety Profile
+method: POST
+url: '{{baseUrl}}/vehicle/:id'
+order: 5000
+description: |-
+  Tests the POST /vehicle/:id endpoint that creates a new vehicle safety profile in SafeStar.
+
+  Why test this? The vehicle profile is the other half of a safety scan — every scan requires
+  both a driver and a vehicle. This test verifies the full response shape including the vehicleId,
+  profileId, status, riskScore, VIN, vehicle metadata pulled from the Vehicle Service, and the
+  initial metrics. We also save the vehicleId for use in downstream vehicle tests.
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: Accept
+    value: application/json
+pathVariables:
+  - key: id
+    value: '1002'
+body:
+  type: json
+  content: |-
+    {
+      "vin": "{VEHICLE_IDENTIFICATION_NUMBER}",
+      "tpms": "OK",
+      "tailLights": "OK",
+      "oilPressure": "OK",
+      "sensors": "OK",
+      "defrost": "OK",
+      "airbags": "OK",
+      "battery": "OK",
+      "newCode": true,
+      "activeCodes": ["P0300","P0420","P0455","P0171","P0128"]
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // ─────────────────────────────────────────────────────────────────────────────
+      // FUNCTIONAL TEST: Create Vehicle Safety Profile
+      //
+      // This endpoint creates a vehicle profile by accepting diagnostic data and
+      // integrating with the Vehicle Service to pull make/model/year. We verify
+      // the full response shape, initial state, and save the vehicleId for chaining.
+      // ─────────────────────────────────────────────────────────────────────────────
+
+      // TEST 1: Status code should be 201 Created
+      // WHY: POST requests that create a new resource should return 201, not 200.
+      // 201 tells the client "a new resource was created at this location."
+      pm.test("Status code is 201 Created", function () {
+          pm.response.to.have.status(201);
+      });
+
+      // TEST 2: Response must include a Content-Type: application/json header
+      // WHY: The client needs this header to know how to parse the response body.
+      pm.test("Response has Content-Type: application/json header", function () {
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json");
+      });
+
+      // TEST 3: Response body must be valid, parseable JSON
+      // WHY: Always confirm the body is valid JSON before accessing any fields.
+      pm.test("Response body is valid JSON", function () {
+          pm.response.json();
+      });
+
+      const responseBody = pm.response.json();
+
+      // TEST 4: vehicleId must exist and be a string
+      // WHY: The vehicleId is the unique identifier for this vehicle in the SafeStar
+      // system. It's used in all subsequent vehicle requests (Retrieve, Update, Delete).
+      // If it's missing or not a string, the entire vehicle test chain will fail.
+      pm.test("vehicleId exists and is a string", function () {
+          pm.expect(responseBody).to.have.property("vehicleId");
+          pm.expect(responseBody.vehicleId).to.be.a("string");
+      });
+
+      // TEST 5: profileId must exist and be a string
+      // WHY: The profileId links this vehicle profile to a broader safety profile
+      // record. It's a separate identifier from vehicleId and must be present.
+      pm.test("profileId exists and is a string", function () {
+          pm.expect(responseBody).to.have.property("profileId");
+          pm.expect(responseBody.profileId).to.be.a("string");
+      });
+
+      // TEST 6: status must be "ACTIVE"
+      // WHY: A newly created vehicle profile should immediately be in ACTIVE status.
+      // If it's INACTIVE or PENDING, the profile isn't ready to be used in a safety
+      // scan. This test enforces the business rule that creation = activation.
+      pm.test("status is ACTIVE for a new vehicle profile", function () {
+          pm.expect(responseBody).to.have.property("status");
+          pm.expect(responseBody.status).to.equal("ACTIVE");
+      });
+
+      // TEST 7: riskScore must be a number
+      // WHY: The riskScore is computed from the vehicle's diagnostic trouble codes
+      // (DTCs) submitted in the request body. It's a key output of this endpoint.
+      // If it's not a number, the scoring algorithm failed silently.
+      pm.test("riskScore is a number", function () {
+          pm.expect(responseBody).to.have.property("riskScore");
+          pm.expect(responseBody.riskScore).to.be.a("number");
+      });
+
+      // TEST 8: vin field must exist
+      // WHY: The VIN (Vehicle Identification Number) ties this SafeStar profile back
+      // to the real vehicle record in the Vehicle Service. Without it, there's no way
+      // to correlate the safety profile with the physical vehicle.
+      pm.test("vin field exists in the response", function () {
+          pm.expect(responseBody).to.have.property("vin");
+      });
+
+      // TEST 9: make, model, and year must all exist
+      // WHY: These fields are pulled from the Vehicle Service via a microservice
+      // integration call. Their presence confirms the integration is working correctly.
+      // If any are missing, the SafeStar service failed to communicate with the
+      // Vehicle Service — a critical integration failure.
+      pm.test("make, model, and year exist (pulled from Vehicle Service)", function () {
+          pm.expect(responseBody).to.have.property("make");
+          pm.expect(responseBody).to.have.property("model");
+          pm.expect(responseBody).to.have.property("year");
+      });
+
+      // TEST 10: metrics object must exist with all three event counters as numbers
+      // WHY: The metrics object tracks driving behavior events. All three counters
+      // must be present and be numbers. For a new profile, they should be 0, but
+      // we test the type here (not the value) since the API spec only guarantees
+      // they are numbers, not that they start at 0.
+      pm.test("metrics object exists with numeric event counters", function () {
+          pm.expect(responseBody).to.have.property("metrics");
+          pm.expect(responseBody.metrics).to.be.an("object");
+
+          const metricFields = ["hardCorneringEvents", "hardBrakingEvents", "speedingEvents"];
+          metricFields.forEach(function (field) {
+              pm.expect(responseBody.metrics).to.have.property(field,
+                  `metrics.${field} is missing from the response`
+              );
+              pm.expect(responseBody.metrics[field]).to.be.a("number",
+                  `metrics.${field} should be a number`
+              );
+          });
+      });
+
+      // TEST 11: createdAt and updatedAt must be strings
+      // WHY: Timestamps confirm the record was actually persisted to the database.
+      // If either is missing or null, the record may not have been saved correctly.
+      // We test for strings (not Date objects) because JSON timestamps are always
+      // serialized as ISO 8601 strings.
+      pm.test("createdAt and updatedAt are strings (record was persisted)", function () {
+          pm.expect(responseBody).to.have.property("createdAt");
+          pm.expect(responseBody.createdAt).to.be.a("string");
+          pm.expect(responseBody).to.have.property("updatedAt");
+          pm.expect(responseBody.updatedAt).to.be.a("string");
+      });
+
+      // CHAIN: Save vehicleId to a collection variable for use in later requests
+      // WHY: The Retrieve, Update, Delete, and Run Safety Scan tests all need this ID.
+      // Saving it here makes the test suite self-contained and environment-agnostic.
+      const vehicleId = responseBody.vehicleId;
+      pm.collectionVariables.set("vehicleId", vehicleId);
+      console.log("Saved vehicleId to collection variables:", vehicleId);

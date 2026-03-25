@@ -1,2 +1,4 @@
 $kind: collection
+description: |-
+  Endpoints for managing Driver Safety Profiles within the SafeStar Service. A Driver Safety Profile tracks the safety metrics associated with a specific driver, identified by their ID from the upstream Driver Service. This folder provides the full set of CRUD operations — create a new profile, retrieve an existing one, update it with new safety data, or delete it when no longer needed. Driver IDs used here should correspond to valid drivers already registered in the Driver Service.
 order: 1000

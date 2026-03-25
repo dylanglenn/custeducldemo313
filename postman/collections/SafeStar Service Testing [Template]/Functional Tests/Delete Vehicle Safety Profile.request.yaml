@@ -1,0 +1,54 @@
+$kind: http-request
+name: Delete Vehicle Safety Profile
+method: DELETE
+url: '{{baseUrl}}/vehicle/:id'
+order: 8000
+description: |-
+  Tests the DELETE /vehicle/:id endpoint that removes a vehicle safety profile from the system.
+
+  Why test this? Like driver profile deletion, we verify the API follows the correct REST
+  convention for deletion: 204 No Content with an empty body. This request should be run
+  last in the vehicle profile sequence, as deleting the profile will cause subsequent
+  Retrieve and Update tests to return 404.
+headers:
+  - key: Accept
+    value: application/json
+pathVariables:
+  - key: id
+    value: '1002'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // ─────────────────────────────────────────────────────────────────────────────
+      // FUNCTIONAL TEST: Delete Vehicle Safety Profile
+      //
+      // We verify the DELETE endpoint follows REST conventions: 204 status with
+      // no response body. These two checks together confirm the resource was deleted
+      // and the API is not leaking data in the response.
+      // ─────────────────────────────────────────────────────────────────────────────
+
+      // TEST 1: Status code should be 204 No Content
+      // WHY: The HTTP spec says a successful DELETE should return 204 No Content.
+      // This communicates: "the resource was deleted and there is nothing to return."
+      // A 200 with a body is also valid in some APIs, but 204 is the REST standard.
+      // A 404 here means the resource wasn't found — possibly already deleted.
+      pm.test("Status code is 204 No Content", function () {
+          pm.response.to.have.status(204);
+      });
+
+      // TEST 2: Response body must be empty
+      // WHY: RFC 7231 states that a 204 response MUST NOT include a message body.
+      // If the server sends a body with a 204, it's violating the HTTP spec and
+      // may cause issues with HTTP clients that don't expect a body after 204.
+      pm.test("Response body is empty", function () {
+          pm.expect(pm.response.text().trim()).to.equal("");
+      });
+
+      // TEST 3: Response time must be under 2000ms
+      // WHY: Deletion should be fast. If it's slow, the server may be doing
+      // expensive synchronous cleanup (cascading deletes, external API calls)
+      // that should be handled asynchronously.
+      pm.test("Response time is under 2000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });

@@ -1,2 +1,4 @@
 $kind: collection
+description: |-
+  Endpoints for generating, retrieving, and sending vehicle diagnostic reports within the SafeStar Service. A diagnostic report is produced by running a full diagnostic check against a vehicle's safety profile and OBD-II data. Once generated, reports can be retrieved by ID for review or dispatched onward using the send endpoint. This folder supports the full diagnostic reporting lifecycle — from triggering a new report generation through to delivery.
 order: 4000

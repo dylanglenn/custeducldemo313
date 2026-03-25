@@ -1,0 +1,117 @@
+$kind: http-request
+name: Retrieve Driver Safety Profile
+method: GET
+url: '{{baseUrl}}/driver/:id'
+order: 2000
+description: |-
+  Tests the GET /driver/:id endpoint that retrieves an existing driver safety profile.
+
+  Why test this? After creating a profile, we need to confirm the data was actually persisted
+  and can be read back correctly. This test also validates the full shape of the response
+  including nested objects like the license, and checks that the safetyScore is within a
+  valid business range. Response time is also checked — slow reads can indicate database issues.
+headers:
+  - key: Accept
+    value: application/json
+pathVariables:
+  - key: id
+    value: '1001'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // ─────────────────────────────────────────────────────────────────────────────
+      // FUNCTIONAL TEST: Retrieve Driver Safety Profile
+      //
+      // This test suite verifies that the GET endpoint returns a complete, well-formed
+      // driver profile. We check the status code, response headers, body structure,
+      // data types, business rules (score range), and response time.
+      //
+      // Tip: Run this AFTER "Create Driver Safety Profile" so the profile exists.
+      // ─────────────────────────────────────────────────────────────────────────────
+
+      // TEST 1: Status code should be 200 OK
+      // WHY: A successful GET request returns 200. If the profile doesn't exist,
+      // the server should return 404. Getting 200 confirms the profile was found.
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      // TEST 2: Response must include a Content-Type: application/json header
+      // WHY: Clients rely on this header to parse the response correctly.
+      // A missing Content-Type can cause silent parsing failures in production apps.
+      pm.test("Response has Content-Type: application/json header", function () {
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json");
+      });
+
+      // TEST 3: Response body must be valid, parseable JSON
+      // WHY: We always confirm the body is valid JSON before trying to access fields.
+      // This catches cases where the server returns an HTML error page or plain text.
+      pm.test("Response body is valid JSON", function () {
+          pm.response.json();
+      });
+
+      const responseBody = pm.response.json();
+
+      // TEST 4: profileId field must exist
+      // WHY: The profileId is the primary identifier for this record. Its presence
+      // confirms we retrieved the correct resource, not an empty or default object.
+      pm.test("profileId field exists", function () {
+          pm.expect(responseBody).to.have.property("profileId");
+      });
+
+      // TEST 5: driver object must exist with required personal fields
+      // WHY: The driver sub-object is the core of the profile. Missing fields here
+      // would mean the data wasn't saved correctly during the Create step.
+      pm.test("driver object exists with firstName, lastName, and email", function () {
+          pm.expect(responseBody).to.have.property("driver");
+          pm.expect(responseBody.driver).to.be.an("object");
+          pm.expect(responseBody.driver).to.have.property("firstName");
+          pm.expect(responseBody.driver).to.have.property("lastName");
+          pm.expect(responseBody.driver).to.have.property("email");
+      });
+
+      // TEST 6: safetyScore must be a number between 0 and 100
+      // WHY: The safety score is a bounded metric — it can never be negative or
+      // exceed 100. If the score is outside this range, the scoring algorithm has
+      // a bug. We test both the type AND the valid range here.
+      pm.test("safetyScore is a number between 0 and 100", function () {
+          pm.expect(responseBody).to.have.property("safetyScore");
+          pm.expect(responseBody.safetyScore).to.be.a("number");
+          pm.expect(responseBody.safetyScore).to.be.at.least(0,
+              "safetyScore should never be negative"
+          );
+          pm.expect(responseBody.safetyScore).to.be.at.most(100,
+              "safetyScore should never exceed 100"
+          );
+      });
+
+      // TEST 7: license object must exist inside driver with required fields
+      // WHY: The license is a nested object within the driver. We verify it exists
+      // and has the key fields needed for compliance checks and display in the app.
+      pm.test("driver.license exists with issueDate, expiry, and issuingState", function () {
+          pm.expect(responseBody.driver).to.have.property("license");
+          pm.expect(responseBody.driver.license).to.be.an("object");
+          pm.expect(responseBody.driver.license).to.have.property("issueDate");
+          pm.expect(responseBody.driver.license).to.have.property("expiry");
+          pm.expect(responseBody.driver.license).to.have.property("issuingState");
+      });
+
+      // TEST 8: restrictions must be an array
+      // WHY: Even if a driver has no restrictions, the field should always be an
+      // empty array [], never null or undefined. Null would break any code that
+      // tries to iterate over restrictions (e.g. .forEach, .length). This is a
+      // common API design mistake that causes hard-to-debug frontend errors.
+      pm.test("driver.license.restrictions is an array", function () {
+          pm.expect(responseBody.driver.license).to.have.property("restrictions");
+          pm.expect(responseBody.driver.license.restrictions).to.be.an("array");
+      });
+
+      // TEST 9: Response time must be under 2000ms
+      // WHY: Performance is part of functional testing. A response that takes more
+      // than 2 seconds for a simple profile lookup indicates a problem — perhaps a
+      // missing database index, an N+1 query, or a downstream service timeout.
+      // Catching this early prevents production performance degradation.
+      pm.test("Response time is under 2000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });

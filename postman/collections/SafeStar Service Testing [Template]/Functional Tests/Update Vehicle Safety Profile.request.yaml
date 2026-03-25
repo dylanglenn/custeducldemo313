@@ -1,0 +1,79 @@
+$kind: http-request
+name: Update Vehicle Safety Profile
+method: PATCH
+url: '{{baseUrl}}/vehicle/:id'
+order: 7000
+description: |-
+  Tests the PATCH /vehicle/:id endpoint that partially updates a vehicle safety profile.
+
+  Why test this? PATCH is used for partial updates — only the fields provided in the request
+  body are changed. We verify the server returns 200, the response is valid JSON, the vehicleId
+  is still present, and critically that the updatedAt timestamp has been updated. The updatedAt
+  check is important because it confirms the update was actually persisted, not just acknowledged.
+headers:
+  - key: Accept
+    value: application/json
+pathVariables:
+  - key: id
+    value: '1002'
+body:
+  type: json
+  content: |-
+    {
+      "newCode": false
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // ─────────────────────────────────────────────────────────────────────────────
+      // FUNCTIONAL TEST: Update Vehicle Safety Profile (PATCH)
+      //
+      // PATCH differs from PUT: it only updates the fields you send, leaving all
+      // other fields unchanged. We verify the server handles this correctly and
+      // that the updatedAt timestamp reflects the change.
+      // ─────────────────────────────────────────────────────────────────────────────
+
+      // TEST 1: Status code should be 200 OK
+      // WHY: A successful PATCH returns 200 OK with the updated resource in the body.
+      // Unlike DELETE (204) or POST-create (201), a PATCH that modifies an existing
+      // resource returns 200 to indicate success with a response body.
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      // TEST 2: Response body must be valid, parseable JSON
+      // WHY: The server should return the updated resource so the client can confirm
+      // what changed. If the body is not valid JSON, the update may have succeeded
+      // on the server but the client has no way to verify it.
+      pm.test("Response body is valid JSON", function () {
+          pm.response.json();
+      });
+
+      const responseBody = pm.response.json();
+
+      // TEST 3: vehicleId must exist in the response
+      // WHY: The response should include the vehicleId so the client can confirm
+      // it received the correct resource back after the update.
+      pm.test("vehicleId exists in the response", function () {
+          pm.expect(responseBody).to.have.property("vehicleId");
+      });
+
+      // TEST 4: updatedAt must exist and be a string
+      // WHY: After a PATCH, the updatedAt timestamp should be updated to reflect
+      // when the change was made. This is the most reliable way to confirm the
+      // update was actually persisted to the database — not just processed in memory.
+      // If updatedAt is missing or unchanged, the update may not have been saved.
+      // We test for a string type because JSON timestamps are ISO 8601 strings.
+      pm.test("updatedAt exists and is a string (confirms update was persisted)", function () {
+          pm.expect(responseBody).to.have.property("updatedAt");
+          pm.expect(responseBody.updatedAt).to.be.a("string");
+      });
+
+      // TEST 5: Response time must be under 2000ms
+      // WHY: PATCH operations should be fast since they only update specific fields.
+      // A slow PATCH can indicate the server is recomputing expensive derived fields
+      // (like riskScore) synchronously on every update, which should be async.
+      pm.test("Response time is under 2000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });

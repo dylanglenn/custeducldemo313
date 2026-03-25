@@ -1,4 +1,168 @@
 $kind: collection
+summary: 'The SafeStar Service API is a Platform Engineering microservice at
+  PostVehicle Enterprises that tracks driver and vehicle safety metrics. It
+  manages safety profiles, runs asynchronous safety scans on driver-vehicle
+  pairings, and generates diagnostic reports. Once checks are complete, it
+  delivers personalized Driver Messages with tailored feedback to help drivers
+  improve their safety performance.'
+name: SafeStar Service API
+description: >-
+  ## Overview
+
+
+  The **SafeStar Service API** is a microservice owned by the **Platform
+  Engineering team at PostVehicle Enterprises**. It is responsible for tracking
+  driver and vehicle safety metrics and generating personalized **Driver
+  Messages** — customized feedback that helps drivers understand their safety
+  performance and how to improve.
+
+
+  SafeStar operates as a dedicated safety layer within PostVehicle's
+  microservices architecture. Driver and Vehicle entity management are handled
+  by separate upstream services (the **Driver Service** and **Vehicle Service**
+  respectively), while SafeStar focuses exclusively on safety profiling,
+  scanning, reporting, and display.
+
+
+  ### Key Capabilities
+
+
+  - **Driver Safety Profiles** — Create, retrieve, update, and delete safety
+  profiles linked to drivers managed in the Driver Service.
+
+  - **Vehicle Safety Profiles** — Create, retrieve, update, and delete safety
+  profiles linked to vehicles managed in the Vehicle Service, including OBD-II
+  diagnostic codes and sensor status.
+
+  - **Safety Scans** — Trigger asynchronous safety scan runs that evaluate a
+  driver-vehicle pairing, check run status, and cancel in-progress runs.
+
+  - **Diagnostic Reporting** — Generate, retrieve, and send diagnostic reports
+  for a vehicle.
+
+  - **Driver Message Display** — Retrieve a customized safety message for a
+  driver-vehicle pair once safety checks are complete.
+
+
+  ---
+
+
+  ## Getting Started
+
+
+  ### Prerequisites
+
+
+  Before using the SafeStar Service API, ensure you have:
+
+
+  1. A **Driver ID** from the Driver Service for the driver you want to work
+  with.
+
+  2. A **Vehicle ID** from the Vehicle Service for the vehicle you want to work
+  with.
+
+  3. A valid **API key** to authenticate requests.
+
+
+  ### Authentication
+
+
+  All requests are authenticated using an **API key** passed as the `X-API-Key`
+  request header. The collection is pre-configured to read this from the
+  `vault:apiKey` vault variable.
+
+
+  Set your API key in the Postman Vault:
+
+  - Open the **Vault** panel in Postman and add a secret named `apiKey` with
+  your API key value.
+
+
+  ### Environments
+
+
+  The collection uses a `{{baseUrl}}` environment variable for the base URL.
+  Three environments are available:
+
+
+  | Environment | Description |
+
+  |---|---|
+
+  | **Local** | Points to the Postman mock server for local development and
+  testing |
+
+  | **Test** | For integration testing against the test environment |
+
+  | **Prod** | For production use |
+
+
+  Select the appropriate environment from the environment selector before
+  sending requests.
+
+
+  ### Typical Workflow
+
+
+  Follow these steps to get a customized Driver Message for a driver-vehicle
+  pair:
+
+
+  **1. Create a Driver Safety Profile**
+
+  `POST {{baseUrl}}/driver/:id`
+
+  Register a safety profile for a driver using their Driver Service ID.
+
+
+  **2. Create a Vehicle Safety Profile**
+
+  `POST {{baseUrl}}/vehicle/:id`
+
+  Register a safety profile for a vehicle using their Vehicle Service ID.
+  Include vehicle sensor statuses (TPMS, airbags, battery, etc.) and any active
+  OBD-II diagnostic codes.
+
+
+  **3. Run a Safety Scan**
+
+  `POST {{baseUrl}}/run`
+
+  Trigger an asynchronous safety scan for the driver-vehicle pair. Returns a run
+  ID.
+
+
+  **4. Check Run Status**
+
+  `GET {{baseUrl}}/run/:id`
+
+  Poll the status of the safety scan using the run ID returned in step 3. Wait
+  until the scan is complete before proceeding.
+
+
+  **5. Get the Driver Message Display**
+
+  `GET {{baseUrl}}/display`
+
+  Once safety checks are complete, retrieve the personalized Driver Message for
+  the driver-vehicle pair.
+
+
+  **6. Generate a Diagnostic Report** *(optional)*
+
+  `POST {{baseUrl}}/diagnostics/generate/:vehicleId`
+
+  Generate a full diagnostic report for the vehicle.
+
+
+  **7. Retrieve & Send the Report** *(optional)*
+
+  Use `GET {{baseUrl}}/diagnostics/:id` to retrieve the report and `POST
+  {{baseUrl}}/diagnostics/send/:id` to send it.
+
+
+  ---
 variables:
   baseUrl: "{{baseUrl}}"
 auth:

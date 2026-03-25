@@ -1,3 +1,5 @@
 $kind: collection
 name: Scenario 2 - Student Challenge
 order: 2000
+description: |-
+  End-to-end workflow test covering error handling and diagnostic reporting — intended as a student challenge scenario for learners to complete and extend. The scenario walks through four ordered stages: (1) Setup — authenticates by setting a JWT token; (2) Existing driver starts vehicle and triggers SafeStar — confirms that both the driver and vehicle already have safety profiles registered in the SafeStar Service; (3) An unexpected error occurs during vehicle safety scan — validates that the SafeStar Service handles a scan failure gracefully, returning an appropriate error response; (4) Diagnostic report is sent to SafeStar — triggers a diagnostic report generation, polls until the report is ready, retrieves it by ID, and then sends it on successfully; and (5) Teardown — clears the JWT token. Unlike Scenario 1, this scenario focuses on the error and reporting paths rather than the happy path, making it a practical exercise for testing resilience and the full diagnostic reporting lifecycle.

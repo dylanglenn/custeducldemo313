@@ -1,0 +1,115 @@
+$kind: http-request
+name: Get Driver Message Display
+method: GET
+url: '{{baseUrl}}/display'
+order: 15000
+description: |-
+  Tests the GET /display endpoint that generates a personalized safety message for a driver.
+
+  Why test this? The display endpoint produces the human-facing output of the SafeStar service —
+  the message a driver sees in the app after a safety scan. We verify both the plain-text and
+  HTML versions of the message exist, are non-empty strings, and that the HTML is structurally
+  valid (contains a <div> tag). An empty or malformed message would mean the personalization
+  engine failed silently.
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: Accept
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "driver": "1001",
+      "vehicle": "1002"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // ─────────────────────────────────────────────────────────────────────────────
+      // FUNCTIONAL TEST: Get Driver Message Display
+      //
+      // This endpoint generates personalized safety messaging for a driver. We verify
+      // both the plain-text and HTML versions of the message are present, non-empty,
+      // and structurally correct. This is the "last mile" of the SafeStar workflow —
+      // the output the driver actually sees.
+      // ─────────────────────────────────────────────────────────────────────────────
+
+      // TEST 1: Status code should be 200 OK
+      // WHY: A successful message generation returns 200. If the driver or vehicle
+      // ID is not found, the server should return 404. Getting 200 confirms the
+      // personalization engine found the data it needed and generated a message.
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      // TEST 2: Response body must be valid, parseable JSON
+      // WHY: The response contains two fields (message and html). If the body is
+      // not valid JSON, neither field can be accessed and the app UI will break.
+      pm.test("Response body is valid JSON", function () {
+          pm.response.json();
+      });
+
+      const responseBody = pm.response.json();
+
+      // TEST 3: message field must exist and be a string
+      // WHY: The "message" field is the plain-text version of the driver's safety
+      // summary, shown in the SafeStar mobile app. It must be a string so the app
+      // can display it directly without any additional parsing or transformation.
+      pm.test("message field exists and is a string", function () {
+          pm.expect(responseBody).to.have.property("message");
+          pm.expect(responseBody.message).to.be.a("string");
+      });
+
+      // TEST 4: html field must exist and be a string
+      // WHY: The "html" field is the rich HTML version of the message, used for
+      // display in the web app UI or email notifications. It must be a string
+      // containing valid HTML markup. If it's null or not a string, the UI will
+      // render nothing or throw a rendering error.
+      pm.test("html field exists and is a string", function () {
+          pm.expect(responseBody).to.have.property("html");
+          pm.expect(responseBody.html).to.be.a("string");
+      });
+
+      // TEST 5: message must not be empty
+      // WHY: An empty message string means the personalization engine failed to
+      // generate content — perhaps because the driver's safety score or name
+      // couldn't be retrieved. An empty message is a silent failure: the API
+      // returns 200 but the user sees nothing. We explicitly check for this.
+      pm.test("message is not empty", function () {
+          pm.expect(responseBody.message.trim().length).to.be.above(0,
+              "message should not be an empty string — personalization may have failed"
+          );
+      });
+
+      // TEST 6: html must not be empty
+      // WHY: Same reasoning as the message field — an empty HTML string means
+      // the UI will render a blank section. This is a silent failure that's easy
+      // to miss without an explicit test.
+      pm.test("html is not empty", function () {
+          pm.expect(responseBody.html.trim().length).to.be.above(0,
+              "html should not be an empty string — personalization may have failed"
+          );
+      });
+
+      // TEST 7: html must contain an opening <div> tag
+      // WHY: This is a basic structural sanity check on the HTML content. The
+      // SafeStar app expects the HTML to be wrapped in a <div> element. If the
+      // HTML doesn't contain a <div>, it may be a plain text string that was
+      // accidentally returned in the html field, or the template engine failed
+      // to render the HTML wrapper. We use includes() for a simple substring check.
+      pm.test("html contains an opening <div> tag", function () {
+          pm.expect(responseBody.html).to.include("<div",
+              "html field should contain a <div> element but none was found"
+          );
+      });
+
+      // TEST 8: Response time must be under 2000ms
+      // WHY: Message generation involves fetching driver data, safety scores, and
+      // running a template engine. If this takes more than 2 seconds, the app UI
+      // will feel sluggish. This test catches performance regressions in the
+      // personalization pipeline.
+      pm.test("Response time is under 2000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });

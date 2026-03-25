@@ -1,0 +1,79 @@
+$kind: http-request
+name: Run Safety Scan
+method: POST
+url: '{{baseUrl}}/run'
+order: 9000
+description: |-
+  Tests the POST /run endpoint that initiates a new safety scan for a driver/vehicle pair.
+
+  Why test this? The safety scan is the core operation of the SafeStar service — it ties
+  together a driver profile and a vehicle profile to produce a safety assessment. This test
+  verifies the scan is accepted (201), starts in QUEUED state, and returns a run ID that
+  we save for use in the Get Run Status and Cancel Run requests.
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: Accept
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "vehicle": "1002",
+      "driver": "1001"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // ─────────────────────────────────────────────────────────────────────────────
+      // FUNCTIONAL TEST: Run Safety Scan
+      //
+      // This endpoint kicks off an async safety scan. The response tells us the scan
+      // was accepted and queued. We verify the status code, the initial QUEUED state,
+      // and save the run ID for polling in the Get Run Status request.
+      // ─────────────────────────────────────────────────────────────────────────────
+
+      // TEST 1: Status code should be 201 Created
+      // WHY: Starting a new scan creates a new "run" resource. POST requests that
+      // create resources should return 201. If this returns 200, the API is not
+      // following REST conventions for resource creation.
+      pm.test("Status code is 201 Created", function () {
+          pm.response.to.have.status(201);
+      });
+
+      // TEST 2: Response body must be valid, parseable JSON
+      // WHY: We need to parse the response to extract the run ID. If the body is
+      // not valid JSON, we can't get the ID and the entire downstream chain breaks.
+      pm.test("Response body is valid JSON", function () {
+          pm.response.json();
+      });
+
+      const responseBody = pm.response.json();
+
+      // TEST 3: run field must exist and be a string
+      // WHY: The run ID is what we use to poll for the scan's status. Without it,
+      // we have no way to check whether the scan completed, failed, or is still
+      // in progress. It must be a string (not a number) to match the API contract.
+      pm.test("run field exists and is a string", function () {
+          pm.expect(responseBody).to.have.property("run");
+          pm.expect(responseBody.run).to.be.a("string");
+      });
+
+      // TEST 4: status must be "QUEUED"
+      // WHY: A newly started scan should always begin in QUEUED state — it hasn't
+      // started processing yet. If the status is already IN_PROGRESS or COMPLETE,
+      // the scan either ran synchronously (unexpected) or the API is returning
+      // stale data from a previous run. QUEUED is the only valid initial state.
+      pm.test("status is QUEUED for a newly started scan", function () {
+          pm.expect(responseBody).to.have.property("status");
+          pm.expect(responseBody.status).to.equal("QUEUED");
+      });
+
+      // CHAIN: Save run ID to a collection variable for use in Get Run Status
+      // WHY: The Get Run Status and Cancel Run requests need this ID to reference
+      // the specific scan we just started. Saving it here makes the test suite
+      // self-contained — no need to manually copy/paste IDs between requests.
+      const runId = responseBody.run;
+      pm.collectionVariables.set("runId", runId);
+      console.log("Saved runId to collection variables:", runId);

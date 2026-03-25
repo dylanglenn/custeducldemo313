@@ -1,0 +1,51 @@
+$kind: http-request
+name: Cancel Run
+method: DELETE
+url: '{{baseUrl}}/run/:id'
+order: 11000
+description: |-
+  Tests the DELETE /run/:id endpoint that cancels an in-progress or queued safety scan run.
+
+  Why test this? Users may need to cancel a scan that was started by mistake or is taking too
+  long. We verify the API returns 204 No Content with an empty body, following the same REST
+  convention as other DELETE endpoints in this API. Response time is also checked.
+headers:
+  - key: Accept
+    value: application/json
+pathVariables:
+  - key: id
+    value: '1'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // ─────────────────────────────────────────────────────────────────────────────
+      // FUNCTIONAL TEST: Cancel Run
+      //
+      // Cancelling a run is a DELETE operation. We verify the server returns 204
+      // with no body — the same pattern as all other DELETE endpoints in this API.
+      // ─────────────────────────────────────────────────────────────────────────────
+
+      // TEST 1: Status code should be 204 No Content
+      // WHY: A successful cancellation deletes the run resource and returns 204.
+      // There's nothing to send back — the run no longer exists. If the server
+      // returns 200 with a body, it's inconsistent with the other DELETE endpoints.
+      // If it returns 404, the run ID was not found (possibly already cancelled).
+      pm.test("Status code is 204 No Content", function () {
+          pm.response.to.have.status(204);
+      });
+
+      // TEST 2: Response body must be empty
+      // WHY: Per RFC 7231, a 204 response MUST NOT include a message body.
+      // An empty body confirms the server is following the HTTP spec correctly.
+      pm.test("Response body is empty", function () {
+          pm.expect(pm.response.text().trim()).to.equal("");
+      });
+
+      // TEST 3: Response time must be under 2000ms
+      // WHY: Cancelling a run should be fast — it's a simple state change or
+      // deletion. A slow cancel could indicate the server is waiting for an
+      // in-progress job to finish before cancelling, which is incorrect behavior.
+      pm.test("Response time is under 2000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });

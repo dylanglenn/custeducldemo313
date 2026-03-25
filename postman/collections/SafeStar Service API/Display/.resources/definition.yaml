@@ -1,2 +1,4 @@
 $kind: collection
+description: |-
+  Endpoint for retrieving the personalized Driver Message display for a driver-vehicle pair. Once safety checks have been completed for a given driver and vehicle, this endpoint returns a customized message with feedback tailored to their combined safety data — helping drivers understand their current safety standing and how they can improve. This is typically the final step in the SafeStar safety check workflow.
 order: 3000

@@ -1,0 +1,56 @@
+$kind: http-request
+name: Send Diagnostic Report
+method: POST
+url: '{{baseUrl}}/diagnostics/send/:id'
+order: 14000
+description: |-
+  Tests the POST /diagnostics/send/:id endpoint that sends a completed diagnostic report
+  to the relevant parties (e.g. via email or notification).
+
+  Why test this? Sending a report is a fire-and-forget action — the server processes the
+  send request and returns 204 No Content with no body. We verify the correct status code
+  and empty body, confirming the API follows REST conventions for actions that don't
+  return data. Response time is also checked.
+headers:
+  - key: Accept
+    value: application/json
+pathVariables:
+  - key: id
+    value: '1'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // ─────────────────────────────────────────────────────────────────────────────
+      // FUNCTIONAL TEST: Send Diagnostic Report
+      //
+      // This endpoint triggers the delivery of a diagnostic report. It's a POST
+      // that performs an action (send) rather than creating a resource, so it
+      // returns 204 No Content — there's nothing to send back to the client.
+      // ─────────────────────────────────────────────────────────────────────────────
+
+      // TEST 1: Status code should be 204 No Content
+      // WHY: This POST performs an action (sending the report) rather than creating
+      // a new resource. The server processes the request and returns 204 to indicate
+      // success with no response body. If it returns 200, check whether the API is
+      // also returning a body — if not, 204 is more appropriate.
+      pm.test("Status code is 204 No Content", function () {
+          pm.response.to.have.status(204);
+      });
+
+      // TEST 2: Response body must be empty
+      // WHY: A 204 response MUST NOT include a message body per RFC 7231.
+      // An empty body confirms the server is following the HTTP spec. If the server
+      // returns a body (e.g. a success message), it should use 200 instead of 204.
+      pm.test("Response body is empty", function () {
+          pm.expect(pm.response.text().trim()).to.equal("");
+      });
+
+      // TEST 3: Response time must be under 2000ms
+      // WHY: The "send" action should return quickly — the actual delivery (email,
+      // push notification, etc.) should happen asynchronously in the background.
+      // If this endpoint is slow, it may be waiting for the delivery to complete
+      // before responding, which is a design issue.
+      pm.test("Response time is under 2000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });

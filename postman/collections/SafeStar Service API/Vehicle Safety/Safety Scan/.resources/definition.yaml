@@ -1,2 +1,4 @@
 $kind: collection
+description: |-
+  Endpoints for managing asynchronous safety scan runs against a driver-vehicle pairing. A safety scan evaluates the combined safety data of a driver and vehicle to determine their overall safety status. Use the Run endpoint to kick off a new scan, Run Status to poll for its completion, and Cancel Run to abort an in-progress scan if needed. The run ID returned when starting a scan is required for both status checks and cancellation.
 order: 1000

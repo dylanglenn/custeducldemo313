@@ -1,1 +1,14 @@
 $kind: collection
+name: SafeStar Service Testing [Template]
+description: "A reusable testing template for the SafeStar Service API. Provides
+  a structured starting point for building out a full test suite, organized into
+  five test categories: Functional Tests, Integration Tests, Performance Tests,
+  Validation/Schema Tests, and Workflow Tests. The Workflow Tests folder
+  includes two pre-built end-to-end scenarios — a complete successful startup
+  and safety check flow, and a student challenge scenario covering error
+  handling and diagnostic reporting — each with Setup and Teardown steps."
+variables:
+  driverProfileId: ""
+  vehicleId: ""
+  runId: ""
+  reportId: ""

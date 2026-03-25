@@ -1,0 +1,218 @@
+$kind: http-request
+name: Retrieve Diagnostic Report
+method: GET
+url: '{{baseUrl}}/diagnostics/:id'
+order: 13000
+description: |-
+  Tests the GET /diagnostics/:id endpoint that retrieves a completed diagnostic report.
+
+  Why test this? The diagnostic report is the most complex response in the SafeStar API —
+  it contains nested objects for the job metadata, vehicle info, individual safety checks,
+  diagnostic trouble codes, and a summary. We verify every layer of this structure, loop
+  over the checks and active codes to validate each item, and confirm the summary counts
+  are numbers. This test demonstrates how to handle deeply nested API responses in Postman.
+headers:
+  - key: Accept
+    value: application/json
+pathVariables:
+  - key: id
+    value: '1'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // ─────────────────────────────────────────────────────────────────────────────
+      // FUNCTIONAL TEST: Retrieve Diagnostic Report
+      //
+      // This is the most comprehensive test in the suite. The diagnostic report has
+      // a deeply nested structure with multiple arrays and objects. We verify each
+      // layer systematically, using loops where appropriate to keep tests maintainable.
+      // ─────────────────────────────────────────────────────────────────────────────
+
+      // TEST 1: Status code should be 200 OK
+      // WHY: A successful report retrieval returns 200. If the report isn't ready
+      // yet (still processing), the API might return 202 Accepted or 404. Getting
+      // 200 confirms the report exists and is complete.
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      // TEST 2: Response body must be valid, parseable JSON
+      // WHY: The diagnostic report is a large, complex JSON object. We always
+      // confirm it's valid JSON before trying to access any nested fields.
+      pm.test("Response body is valid JSON", function () {
+          pm.response.json();
+      });
+
+      const responseBody = pm.response.json();
+
+      // TEST 3: id field must exist
+      // WHY: The response should include the report ID so the client can confirm
+      // it received the correct report.
+      pm.test("id field exists", function () {
+          pm.expect(responseBody).to.have.property("id");
+      });
+
+      // TEST 4: outer status must be "success"
+      // WHY: The outer "status" field tells us whether the API call itself succeeded
+      // (i.e. the report was found and returned). This is SEPARATE from the report's
+      // own internal status (which reflects whether the vehicle passed the safety scan).
+      // "success" here means: "I found the report and here it is."
+      pm.test("outer status is 'success' (API call succeeded)", function () {
+          pm.expect(responseBody).to.have.property("status");
+          pm.expect(responseBody.status).to.equal("success");
+      });
+
+      // TEST 5: report object must exist
+      // WHY: The entire diagnostic report is nested inside the "report" key.
+      // If this object is missing, the response is just a wrapper with no content.
+      pm.test("report object exists", function () {
+          pm.expect(responseBody).to.have.property("report");
+          pm.expect(responseBody.report).to.be.an("object");
+      });
+
+      const report = responseBody.report;
+
+      // TEST 6: report.status must be a string
+      // WHY: The report's own status reflects whether the vehicle PASSED or FAILED
+      // the safety scan (e.g. "PASSED", "FAILED", "NEEDS_REVIEW"). This is different
+      // from the outer status. We verify it's a string so the UI can always display it.
+      pm.test("report.status is a string (vehicle scan result)", function () {
+          pm.expect(report).to.have.property("status");
+          pm.expect(report.status).to.be.a("string");
+      });
+
+      // TEST 7: report.job object must exist with required fields
+      // WHY: The job metadata tells us about the async job that generated this report.
+      // jobId, type, and completed are the key fields. "completed" being true confirms
+      // the async job finished before we retrieved the report — if it's false, we
+      // retrieved the report before the job was done (a race condition).
+      pm.test("report.job exists with jobId, type, and completed fields", function () {
+          pm.expect(report).to.have.property("job");
+          pm.expect(report.job).to.be.an("object");
+          pm.expect(report.job).to.have.property("jobId");
+          pm.expect(report.job).to.have.property("type");
+          pm.expect(report.job).to.have.property("completed");
+      });
+
+      // TEST 8: report.job.completed must be a boolean
+      // WHY: "completed" is a boolean flag that tells us the async job finished.
+      // If it's not a boolean (e.g. it's the string "true" or the number 1),
+      // any code that checks `if (job.completed)` may behave unexpectedly.
+      pm.test("report.job.completed is a boolean", function () {
+          pm.expect(report.job.completed).to.be.a("boolean");
+      });
+
+      // TEST 9: report.vehicle object must exist with key fields
+      // WHY: The vehicle section of the report contains the vehicle details at the
+      // time of the scan. vin, make, model, and year are required for the report
+      // to be meaningful — without them, you can't identify which vehicle was scanned.
+      pm.test("report.vehicle exists with vin, make, model, and year", function () {
+          pm.expect(report).to.have.property("vehicle");
+          pm.expect(report.vehicle).to.be.an("object");
+          pm.expect(report.vehicle).to.have.property("vin");
+          pm.expect(report.vehicle).to.have.property("make");
+          pm.expect(report.vehicle).to.have.property("model");
+          pm.expect(report.vehicle).to.have.property("year");
+      });
+
+      // TEST 10: report.checks object must exist
+      // WHY: The checks object contains the results of each physical safety check
+      // (TPMS, tail lights, oil pressure, etc.). It's the core of the diagnostic
+      // report. If it's missing, the report is incomplete.
+      pm.test("report.checks object exists", function () {
+          pm.expect(report).to.have.property("checks");
+          pm.expect(report.checks).to.be.an("object");
+      });
+
+      // TEST 11: Each check must have a status and severity field
+      // WHY: We loop over all checks instead of testing each one individually.
+      // This approach is more maintainable — if a new check is added to the API,
+      // this test automatically covers it without any code changes. It also gives
+      // a clear error message identifying which specific check is missing a field.
+      pm.test("Each check in report.checks has status and severity fields", function () {
+          const checks = report.checks;
+          const checkNames = Object.keys(checks);
+
+          // Verify we actually have checks to test
+          pm.expect(checkNames.length).to.be.above(0, "report.checks should not be empty");
+
+          checkNames.forEach(function (checkName) {
+              const check = checks[checkName];
+              pm.expect(check).to.have.property("status",
+                  `Check "${checkName}" is missing the "status" field`
+              );
+              pm.expect(check).to.have.property("severity",
+                  `Check "${checkName}" is missing the "severity" field`
+              );
+          });
+      });
+
+      // TEST 12: report.diagnostics.activeCodes must be an array
+      // WHY: Even if the vehicle has no active diagnostic trouble codes, this field
+      // should always be an empty array [], never null or undefined. Null would
+      // break any code that tries to iterate over the codes (e.g. .forEach, .map).
+      pm.test("report.diagnostics.activeCodes is an array", function () {
+          pm.expect(report).to.have.property("diagnostics");
+          pm.expect(report.diagnostics).to.have.property("activeCodes");
+          pm.expect(report.diagnostics.activeCodes).to.be.an("array");
+      });
+
+      // TEST 13: Each active code must have required fields
+      // WHY: We loop over all active codes to verify each one has the required fields.
+      // Looping is better than testing a specific index (e.g. activeCodes[0]) because
+      // the number of active codes varies. This test covers all codes regardless of count.
+      pm.test("Each active code has code, description, severity, and recommendedAction", function () {
+          const activeCodes = report.diagnostics.activeCodes;
+
+          activeCodes.forEach(function (codeObj, index) {
+              pm.expect(codeObj).to.have.property("code",
+                  `activeCodes[${index}] is missing the "code" field`
+              );
+              pm.expect(codeObj).to.have.property("description",
+                  `activeCodes[${index}] is missing the "description" field`
+              );
+              pm.expect(codeObj).to.have.property("severity",
+                  `activeCodes[${index}] is missing the "severity" field`
+              );
+              pm.expect(codeObj).to.have.property("recommendedAction",
+                  `activeCodes[${index}] is missing the "recommendedAction" field`
+              );
+          });
+      });
+
+      // TEST 14: report.summary must exist with required fields
+      // WHY: The summary is what gets displayed to the user — it's the human-readable
+      // conclusion of the entire diagnostic scan. All four fields are required for
+      // the summary to be complete and actionable.
+      pm.test("report.summary exists with overallSafetyStatus and issue counts", function () {
+          pm.expect(report).to.have.property("summary");
+          pm.expect(report.summary).to.be.an("object");
+          pm.expect(report.summary).to.have.property("overallSafetyStatus");
+          pm.expect(report.summary).to.have.property("criticalIssues");
+          pm.expect(report.summary).to.have.property("majorIssues");
+          pm.expect(report.summary).to.have.property("moderateIssues");
+      });
+
+      // TEST 15: Issue count fields must all be numbers
+      // WHY: These counts are used to calculate risk scores and trigger alerts.
+      // If any are strings or null, arithmetic operations on them will produce
+      // NaN or throw errors. We verify all three are numbers in a single loop.
+      pm.test("criticalIssues, majorIssues, and moderateIssues are all numbers", function () {
+          const summary = report.summary;
+          const issueFields = ["criticalIssues", "majorIssues", "moderateIssues"];
+
+          issueFields.forEach(function (field) {
+              pm.expect(summary[field]).to.be.a("number",
+                  `summary.${field} should be a number but got: ${typeof summary[field]}`
+              );
+          });
+      });
+
+      // TEST 16: Response time must be under 2000ms
+      // WHY: The diagnostic report is a large, complex document. If retrieval takes
+      // more than 2 seconds, it may indicate the report is being regenerated on
+      // every request instead of being cached after the async job completes.
+      pm.test("Response time is under 2000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });
