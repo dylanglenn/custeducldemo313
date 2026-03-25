@@ -1,100 +1,318 @@
-const http = require("http");
+const http = require('http');
 
 const server = http.createServer((req, res) => {
   const { method, url } = req;
 
-  // Normalize URL by removing query strings for matching
-  const normalizedUrl = url.split("?")[0];
-
-  // === DISPLAY ===
+  // ─── DISPLAY ───────────────────────────────────────────────────────────────
 
   // @endpoint GET /display
-  if (method == "GET" && url == "/display") {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Display/.resources/Get message display upon completed safety checks.resources/examples/200 - Display custom message after successful run.example.yaml", res);
+  if (method === 'GET' && url === '/display') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      "message": "Alex",
+      "html": "<div>🚗✅ Hey \"\"! Safety score: <b>100</b>—perfect drive vibes 😄 Keep it up: smooth accel/brake + stay alert. New codes found: <b>P0300</b>(misfire), <b>P0420</b>(catalyst), <b>P0455</b>(EVAP leak—check gas cap), <b>P0171</b>(lean), <b>P0128</b>(coolant/thermostat). 📅 Book service soon to avoid mpg drop. 🔧</div>"
+    }));
+    return;
   }
 
-  // === DRIVER SAFETY ===
+  // ─── DRIVER SAFETY ─────────────────────────────────────────────────────────
 
   // @endpoint POST /driver/:id
-  if (method == "POST" && url == "/driver/:id") {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Driver Safety/.resources/Create Driver Safety Profile.resources/examples/201 Created - Profile Created.example.yaml", res);
+  if (method === 'POST' && /^\/driver\/[^/]+$/.test(url)) {
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => {
+      res.writeHead(201, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        "profileId": "1",
+        "driver": {
+          "firstName": "Alex",
+          "lastName": "Johnson",
+          "license": {
+            "issueDate": "2022-05-14",
+            "expiry": "2026-05-14",
+            "issuingState": "CA",
+            "restrictions": ["B"]
+          },
+          "email": "alex.johnson@example.com"
+        },
+        "safetyScore": 100,
+        "hardStops": 0,
+        "speeding": 0,
+        "nightDrives": 0,
+        "weather": 0,
+        "ignoredWarnings": 0
+      }));
+    });
+    return;
   }
 
   // @endpoint GET /driver/:id
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Driver Safety/Retrieve Driver Safety Profile.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Driver Safety/.resources/Retrieve Driver Safety Profile.resources/examples/200 OK - Profile Found.example.yaml", res);
+  if (method === 'GET' && /^\/driver\/[^/]+$/.test(url)) {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      "profileId": "1",
+      "driver": {
+        "firstName": "Alex",
+        "lastName": "Johnson",
+        "license": {
+          "issueDate": "2022-05-14",
+          "expiry": "2026-05-14",
+          "issuingState": "CA",
+          "restrictions": ["B"]
+        },
+        "email": "alex.johnson@example.com"
+      },
+      "safetyScore": 100,
+      "hardStops": 0,
+      "speeding": 0,
+      "nightDrives": 0,
+      "weather": 0,
+      "ignoredWarnings": 0
+    }));
+    return;
   }
 
   // @endpoint PUT /driver/:id
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Driver Safety/Update Driver Safety Profile.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Driver Safety/.resources/Update Driver Safety Profile.resources/examples/200 OK - Profile Updated.example.yaml", res);
+  if (method === 'PUT' && /^\/driver\/[^/]+$/.test(url)) {
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        "profileId": "1",
+        "driver": {
+          "firstName": "Alex",
+          "lastName": "Johnson",
+          "license": {
+            "issueDate": "2022-05-14",
+            "expiry": "2026-05-14",
+            "issuingState": "CA",
+            "restrictions": ["B"]
+          },
+          "email": "alex.johnson@example.com"
+        },
+        "safetyScore": 95,
+        "hardStops": 0,
+        "speeding": 1,
+        "nightDrives": 0,
+        "weather": 0,
+        "ignoredWarnings": 0
+      }));
+    });
+    return;
   }
 
   // @endpoint DELETE /driver/:id
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Driver Safety/Delete Driver Safety Profile.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Driver Safety/.resources/Delete Driver Safety Profile.resources/examples/204 No Content - Profile Deleted.example.yaml", res);
+  if (method === 'DELETE' && /^\/driver\/[^/]+$/.test(url)) {
+    res.writeHead(204);
+    res.end();
+    return;
   }
 
-  // === REPORTING ===
-
-  // @endpoint POST /diagnostics/generate/:vehicleId
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Reporting/Run diagnostic and generate report.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Reporting/.resources/Run diagnostic and generate report.resources/examples/201 - Diagnostic report generated successfully.example.yaml", res);
-  }
-
-  // @endpoint GET /diagnostics/:id
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Reporting/Retrieve diagnostic report.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Reporting/.resources/Retrieve diagnostic report.resources/examples/200 - Report sucessfully retrieve.example.yaml", res);
-  }
-
-  // @endpoint POST /diagnostics/send/:id
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Reporting/Send diagnostic report.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Reporting/.resources/Send diagnostic report.resources/examples/204 - Report sent successfully.example.yaml", res);
-  }
-
-  // === VEHICLE SAFETY ===
+  // ─── VEHICLE SAFETY ────────────────────────────────────────────────────────
 
   // @endpoint POST /vehicle/:id
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Vehicle Safety/Create Vehicle Safety Profile.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Vehicle Safety/.resources/Create Vehicle Safety Profile.resources/examples/201 Created - Vehicle Profile Created.example.yaml", res);
+  if (method === 'POST' && /^\/vehicle\/[^/]+$/.test(url)) {
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => {
+      res.writeHead(201, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        "vehicleId": "2a8d3c55-0f3a-4c31-8a2a-3f2fd3a33d2d",
+        "profileId": "aa7f3f4a-6d6d-4b39-a11a-3cf8c9fe0a5b",
+        "createdAt": "2026-03-12T10:25:01.000Z",
+        "updatedAt": "2026-03-12T10:25:01.000Z",
+        "status": "ACTIVE",
+        "riskScore": 12,
+        "vin": "{VEHICLE_IDENTIFICATION_NUMBER}",
+        "make": "Toyota",
+        "model": "Camry",
+        "year": 2021,
+        "metrics": {
+          "hardCorneringEvents": 0,
+          "hardBrakingEvents": 0,
+          "speedingEvents": 0
+        }
+      }));
+    });
+    return;
   }
 
   // @endpoint GET /vehicle/:id
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Vehicle Safety/Retrieve Vehicle Safety Profile.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Vehicle Safety/.resources/Retrieve Vehicle Safety Profile.resources/examples/200 OK - Vehicle Profile Found.example.yaml", res);
+  if (method === 'GET' && /^\/vehicle\/[^/]+$/.test(url)) {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      "vehicle": {
+        "id": 123,
+        "vin": "{VEHICLE_IDENTIFICATION_NUMBER}",
+        "make": "Honda",
+        "model": "Accord",
+        "year": 2020,
+        "mileage": 45000
+      },
+      "tpms": "OK",
+      "tailLights": "OK",
+      "oilPressure": "OK",
+      "sensors": "OK",
+      "defrost": "OK",
+      "airbags": "OK",
+      "battery": "OK",
+      "newCode": true,
+      "activeCodes": ["P0300", "P0420", "P0455", "P0171", "P0128"]
+    }));
+    return;
   }
 
   // @endpoint PATCH /vehicle/:id
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Vehicle Safety/Update Vehicle Safety Profile.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Vehicle Safety/.resources/Update Vehicle Safety Profile.resources/examples/200 OK - Vehicle Profile Updated.example.yaml", res);
+  if (method === 'PATCH' && /^\/vehicle\/[^/]+$/.test(url)) {
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        "vin": "{VEHICLE_IDENTIFICATION_NUMBER}",
+        "tpms": "OK",
+        "tailLights": "OK",
+        "oilPressure": "OK",
+        "sensors": "OK",
+        "defrost": "OK",
+        "airbags": "OK",
+        "battery": "OK",
+        "newCode": false,
+        "activeCodes": ["P0300", "P0420", "P0455", "P0171", "P0128"]
+      }));
+    });
+    return;
   }
 
   // @endpoint DELETE /vehicle/:id
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Vehicle Safety/Delete Vehicle Safety Profile.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Vehicle Safety/.resources/Delete Vehicle Safety Profile.resources/examples/204 No Content - Vehicle Profile Deleted.example.yaml", res);
+  if (method === 'DELETE' && /^\/vehicle\/[^/]+$/.test(url)) {
+    res.writeHead(204);
+    res.end();
+    return;
   }
 
-  // === VEHICLE SAFETY - SAFETY SCAN ===
+  // ─── SAFETY SCAN ───────────────────────────────────────────────────────────
 
   // @endpoint POST /run
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Vehicle Safety/Safety Scan/Run.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Vehicle Safety/Safety Scan/.resources/Run.resources/examples/201 - Run started successfully.example.yaml", res);
+  if (method === 'POST' && url === '/run') {
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => {
+      res.writeHead(201, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        "run": "1",
+        "status": "QUEUED"
+      }));
+    });
+    return;
   }
 
   // @endpoint GET /run/:id
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Vehicle Safety/Safety Scan/Run Status.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Vehicle Safety/Safety Scan/.resources/Run Status.resources/examples/200 - Completed run retrieved successfully.example.yaml", res);
+  if (method === 'GET' && /^\/run\/[^/]+$/.test(url)) {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      "run": "1",
+      "status": "COMPLETE"
+    }));
+    return;
   }
 
   // @endpoint DELETE /run/:id
-  if (pm.mock.matchRequest("postman/collections/SafeStar Service API/Vehicle Safety/Safety Scan/Cancel Run.request.yaml", req)) {
-    return pm.mock.sendExample("postman/collections/SafeStar Service API/Vehicle Safety/Safety Scan/.resources/Cancel Run.resources/examples/204 - Run cancelled successfully.example.yaml", res);
+  if (method === 'DELETE' && /^\/run\/[^/]+$/.test(url)) {
+    res.writeHead(200);
+    res.end();
+    return;
   }
 
-  // 404 Fallback for unmocked routes
-  res.writeHead(404, { "Content-Type": "application/json" });
-  res.end(JSON.stringify({ error: "Mock route not defined", method, url }));
+  // ─── REPORTING ─────────────────────────────────────────────────────────────
+
+  // @endpoint POST /diagnostics/generate/:vehicleId
+  if (method === 'POST' && /^\/diagnostics\/generate\/[^/]+$/.test(url)) {
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => {
+      res.writeHead(201, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        "status": "queued",
+        "id": "1"
+      }));
+    });
+    return;
+  }
+
+  // @endpoint GET /diagnostics/:id
+  if (method === 'GET' && /^\/diagnostics\/[^/]+$/.test(url)) {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      "id": "1",
+      "status": "success",
+      "report": {
+        "timestamp": "2026-03-13T10:15:00Z",
+        "status": "FAILED",
+        "job": {
+          "jobId": "JOB-784512",
+          "type": "VehicleSafetyScan",
+          "completed": true,
+          "durationMs": 4823,
+          "apiVersion": "v2.4.1"
+        },
+        "vehicle": {
+          "id": 1,
+          "vin": "{VEHICLE_IDENTIFICATION_NUMBER}",
+          "make": "Honda",
+          "model": "Accord",
+          "year": 2020,
+          "mileage": 45000
+        },
+        "checks": {
+          "tpms": { "status": "OK", "severity": "NONE" },
+          "tailLights": { "status": "OK", "severity": "NONE" },
+          "oilPressure": { "status": "OK", "severity": "NONE" },
+          "sensors": { "status": "OK", "severity": "NONE" },
+          "defrost": { "status": "OK", "severity": "NONE" },
+          "airbags": { "status": "OK", "severity": "NONE" },
+          "battery": { "status": "OK", "voltage": 12.6, "severity": "NONE" }
+        },
+        "diagnostics": {
+          "newCodeDetected": true,
+          "activeCodes": [
+            { "code": "P0300", "description": "Random/Multiple Cylinder Misfire Detected", "severity": "CRITICAL", "recommendedAction": "Inspect ignition system, spark plugs, and fuel injectors immediately." },
+            { "code": "P0420", "description": "Catalyst System Efficiency Below Threshold", "severity": "MAJOR", "recommendedAction": "Inspect catalytic converter and oxygen sensors." },
+            { "code": "P0455", "description": "Evaporative Emission System Leak (Large Leak)", "severity": "MAJOR", "recommendedAction": "Check fuel cap, EVAP hoses, and purge valve." },
+            { "code": "P0171", "description": "System Too Lean (Bank 1)", "severity": "MAJOR", "recommendedAction": "Inspect for vacuum leaks and check fuel delivery system." },
+            { "code": "P0128", "description": "Coolant Thermostat Temperature Below Regulating Temperature", "severity": "MODERATE", "recommendedAction": "Inspect thermostat and coolant temperature sensor." }
+          ],
+          "failureReason": "Active diagnostic trouble codes detected during safety scan."
+        },
+        "summary": {
+          "overallSafetyStatus": "NOT SAFE TO RELEASE",
+          "criticalIssues": 1,
+          "majorIssues": 3,
+          "moderateIssues": 1,
+          "notes": "Vehicle passed physical safety component checks but failed due to active engine diagnostic trouble codes."
+        }
+      }
+    }));
+    return;
+  }
+
+  // @endpoint POST /diagnostics/send/:id
+  if (method === 'POST' && /^\/diagnostics\/send\/[^/]+$/.test(url)) {
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => {
+      res.writeHead(204);
+      res.end();
+    });
+    return;
+  }
+
+  // ─── FALLBACK ──────────────────────────────────────────────────────────────
+  res.writeHead(404, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ error: 'Mock route not defined', method, url }));
 });
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT);
+const PORT = process.env.PORT || 4500;
+server.listen(PORT, () => console.log('SafeStar mock server running on port ' + PORT));
