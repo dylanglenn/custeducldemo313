@@ -1,7 +1,7 @@
 {
-  "id": "fa12e98d-eebc-4035-b647-13b9f7dfe4da",
+  "id": "af3d7213-d7c6-4a27-a30e-df8f54763c49",
   "version": 1,
-  "name": "SafeStar Service API Mock",
+  "name": "SafeStar Service API",
   "protocol": "http",
   "port": 4500,
   "mockSrc": "./mock.js",

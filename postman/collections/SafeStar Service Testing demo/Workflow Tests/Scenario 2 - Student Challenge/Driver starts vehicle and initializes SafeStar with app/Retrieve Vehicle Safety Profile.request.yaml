@@ -1,6 +1,8 @@
 $kind: http-request
+name: Retrieve Vehicle Safety Profile
 url: "{{baseUrl}}/vehicle/:id"
 method: GET
 pathVariables:
-  id: "1002"
+  - key: id
+    value: "1002"
 order: 2000
